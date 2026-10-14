@@ -8,8 +8,47 @@ data class SearchFilters(
     val onlyFavorites: Boolean = false,
 )
 
-/** In-memory search: the catalogue is a few hundred rows, so this stays instant. */
+/**
+ * In-memory search. The normalised text of every stone is built once per catalogue
+ * and reused, so a query over thousands of stones only does substring checks.
+ */
 object SearchEngine {
+    private class Entry(val name: String, val rest: String)
+
+    @Volatile
+    private var indexFor: Pair<List<Stone>, Map<String, String>>? = null
+
+    @Volatile
+    private var index: Map<String, Entry> = emptyMap()
+
+    private fun index(stones: List<Stone>, types: Map<String, StoneType>): Map<String, Entry> {
+        val key = indexFor
+        if (key != null && key.first === stones && key.second == categoryNames) return index
+        val built = HashMap<String, Entry>(stones.size * 2)
+        for (stone in stones) built[stone.id] = entry(stone, types[stone.typeId])
+        index = built
+        indexFor = stones to categoryNames
+        return built
+    }
+
+    private fun entry(stone: Stone, type: StoneType?): Entry {
+        // Every language is searched, so an English name works in the Persian UI too.
+        val name = TextNormalizer.normalize(
+            "${stone.nameFa} ${stone.nameEn} ${stone.nameAr} ${stone.nameRu} ${stone.aliases}",
+        )
+        val rest = TextNormalizer.normalize(
+            listOf(
+                stone.region, stone.regionEn, stone.regionAr, stone.regionRu,
+                stone.country, stone.countryEn, stone.countryAr, stone.countryRu,
+                stone.description, stone.descEn,
+                type?.nameFa.orEmpty(), type?.nameEn.orEmpty(), type?.nameAr.orEmpty(), type?.nameRu.orEmpty(),
+                categoryName(type?.categoryId),
+                Labels.color(stone.color).label.all, Labels.patterns[stone.pattern]?.all.orEmpty(),
+            ).joinToString(" "),
+        )
+        return Entry(name, rest)
+    }
+
     /** Category names, set once categories load; used only for matching. */
     @Volatile
     var categoryNames: Map<String, String> = emptyMap()
@@ -25,6 +64,7 @@ object SearchEngine {
     ): List<Stone> {
         val terms = TextNormalizer.normalize(TextNormalizer.cleanQuery(query))
             .split(' ').filter { it.isNotEmpty() }
+        val idx = if (terms.isEmpty()) emptyMap() else index(stones, types)
         return stones.asSequence()
             .filter { filters.typeId == null || it.typeId == filters.typeId }
             .filter { filters.color == null || it.color == filters.color }
@@ -33,21 +73,9 @@ object SearchEngine {
             .filter { !filters.onlyFavorites || it.id in favorites }
             .mapNotNull { stone ->
                 if (terms.isEmpty()) return@mapNotNull stone to 0
-                val type = types[stone.typeId]
-                // Every language is searched, so an English name works in the Persian UI too.
-                val name = TextNormalizer.normalize(
-                    "${stone.nameFa} ${stone.nameEn} ${stone.nameAr} ${stone.nameRu} ${stone.aliases}",
-                )
-                val rest = TextNormalizer.normalize(
-                    listOf(
-                        stone.region, stone.regionEn, stone.regionAr, stone.regionRu,
-                        stone.country, stone.countryEn, stone.countryAr, stone.countryRu,
-                        stone.description, stone.descEn,
-                        type?.nameFa.orEmpty(), type?.nameEn.orEmpty(), type?.nameAr.orEmpty(), type?.nameRu.orEmpty(),
-                        categoryName(type?.categoryId),
-                        Labels.color(stone.color).label.all, Labels.patterns[stone.pattern]?.all.orEmpty(),
-                    ).joinToString(" "),
-                )
+                val e = idx[stone.id] ?: entry(stone, types[stone.typeId])
+                val name = e.name
+                val rest = e.rest
                 var score = 0
                 for (t in terms) {
                     score += when {
@@ -59,7 +87,7 @@ object SearchEngine {
                 }
                 stone to score
             }
-            .sortedWith(compareByDescending<Pair<Stone, Int>> { it.second }.thenBy { it.first.nameFa })
+            .sortedWith(compareByDescending<Pair<Stone, Int>> { it.second }.thenBy { it.first.nameEn })
             .map { it.first }
             .toList()
     }

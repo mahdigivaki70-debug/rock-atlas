@@ -89,7 +89,10 @@ data class Stone(
 
     fun name(lang: Lang) = pick(lang, nameFa, nameEn, nameAr, nameRu)
     /** The name in the other script, shown under the main name. */
-    fun subtitle(lang: Lang) = if (lang == Lang.EN) nameFa else nameEn
+    fun subtitle(lang: Lang): String {
+        val other = if (lang == Lang.EN) nameFa else nameEn
+        return if (other == name(lang)) "" else other
+    }
     fun region(lang: Lang) = pick(lang, region, regionEn, regionAr, regionRu)
     fun country(lang: Lang) = pick(lang, country, countryEn, countryAr, countryRu)
     fun desc(lang: Lang) = pick(lang, description, descEn, descAr, descRu)
@@ -118,12 +121,13 @@ data class Favorite(@PrimaryKey val stoneId: String)
 
 private val labFormat = kotlinx.serialization.json.Json { ignoreUnknownKeys = true }
 
+/** The text in [lang]; trade names without a translation fall back to English. */
 internal fun pick(lang: Lang, fa: String, en: String, ar: String, ru: String) = when (lang) {
     Lang.FA -> fa
     Lang.EN -> en
     Lang.AR -> ar
     Lang.RU -> ru
-}
+}.ifBlank { en.ifBlank { fa } }
 
 fun SeedCategory.toEntity() = Category(id, nameFa, nameEn, nameAr, nameRu, sortOrder)
 

@@ -15,8 +15,13 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import i18n_data as T  # noqa: E402
 import more_stones as M  # noqa: E402
+import trade_names as TN  # noqa: E402
+import re  # noqa: E402
+import unicodedata  # noqa: E402
 
-SEED_VERSION = 5
+SLUG_FIX = str.maketrans({"ı": "i", "ø": "o", "ß": "ss", "ł": "l"})
+
+SEED_VERSION = 6
 
 # id: (fa, en, description, density kg/m3, water absorption %, compressive MPa,
 #      flexural MPa, mohs, acid reaction, standard, default finishes, default uses, wiki)
@@ -247,7 +252,7 @@ def table(text, cols):
 
 def main():
     root = pathlib.Path(__file__).resolve().parent.parent
-    countries = table(T.COUNTRIES + M.COUNTRIES, 4)
+    countries = table(T.COUNTRIES + M.COUNTRIES + TN.COUNTRIES, 4)
     regions = table(T.REGIONS + M.REGIONS, 4)
     cats = table(T.CATEGORIES, 6)
     type_tr = table(T.TYPES + M.TYPES_TR, 6)
@@ -311,6 +316,47 @@ def main():
             "wikiTitle": wiki or None,
             "lab": STONE_LAB.get(sid),
         })
+    # Trade-name entries: no text of their own, Arabic/Russian fall back to the trade name.
+    known = set()
+    for st in stones:
+        known.add(st["nameEn"].lower())
+        known.update(a.strip().lower() for a in st["aliases"].split(",") if a.strip())
+    for line in TN.TRADE.strip().splitlines():
+        if not line.strip():
+            continue
+        cols = [c.strip() for c in line.split("|")]
+        assert len(cols) == 6, line
+        tid, color, pattern, country, region, names = cols
+        assert tid in type_ids and color in colors and pattern in patterns, line
+        assert country in countries, f"missing translation for country {country}"
+        if region:
+            assert region in regions, f"missing translation for region {region}"
+            rg = regions[region]
+        else:
+            region, rg = country, countries[country]
+        co = countries[country]
+        for item in names.split(";"):
+            en, _, fa = (x.strip() for x in item.partition("="))
+            if en.lower() in known:
+                continue
+            known.add(en.lower())
+            ascii_name = unicodedata.normalize("NFKD", en.lower().translate(SLUG_FIX)).encode("ascii", "ignore").decode()
+            sid = re.sub(r"[^a-z0-9]+", "_", ascii_name).strip("_")
+            base, n = sid, 2
+            while sid in seen:
+                sid, n = f"{base}_{n}", n + 1
+            seen.add(sid)
+            stones.append({
+                "id": sid, "nameFa": fa or en, "nameEn": en, "nameAr": "", "nameRu": "",
+                "aliases": en if fa else "",
+                "typeId": tid, "color": color, "pattern": pattern,
+                "region": region, "regionEn": rg[1], "regionAr": rg[2], "regionRu": rg[3],
+                "country": country, "countryEn": co[1], "countryAr": co[2], "countryRu": co[3],
+                "finishes": type_defaults[tid]["finishes"], "uses": type_defaults[tid]["uses"],
+                "description": "", "descEn": "", "descAr": "", "descRu": "",
+                "wikiTitle": None, "lab": None,
+            })
+
     assert set(STONE_LAB) <= seen, set(STONE_LAB) - seen
     extra = set(stone_tr) - seen
     assert not extra, f"translations for unknown stones: {extra}"

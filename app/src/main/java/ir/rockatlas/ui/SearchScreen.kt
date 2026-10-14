@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -36,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ir.rockatlas.data.Labels
 import ir.rockatlas.data.SearchEngine
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ir.rockatlas.data.SearchFilters
 import ir.rockatlas.data.TextNormalizer
 import kotlinx.coroutines.delay
@@ -65,8 +68,9 @@ fun SearchScreen(vm: MainViewModel, initialCountry: String?, initialFavorites: B
         debounced = query
     }
     val filters = SearchFilters(typeId, color, use, country, onlyFav)
-    val results = remember(debounced, filters, stones, typeMap, favorites) {
-        SearchEngine.search(debounced, filters, stones, typeMap, favorites)
+    // Runs off the main thread so typing stays smooth with thousands of stones.
+    val results by produceState(emptyList<ir.rockatlas.data.Stone>(), debounced, filters, stones, typeMap, favorites) {
+        value = withContext(Dispatchers.Default) { SearchEngine.search(debounced, filters, stones, typeMap, favorites) }
     }
     // Keys stay Persian (stable filter values); labels follow the app language.
     val countries = remember(stones, lang) {

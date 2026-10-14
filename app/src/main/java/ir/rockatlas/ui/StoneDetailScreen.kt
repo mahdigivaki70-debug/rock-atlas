@@ -97,7 +97,8 @@ fun StoneDetailScreen(vm: MainViewModel, stoneId: String, onBack: () -> Unit, on
                     SuggestionChip(onClick = {}, label = { Text(Labels.patterns[s.pattern]?.get(lang).orEmpty()) })
                 }
                 Spacer(Modifier.height(8.dp))
-                Text(s.desc(lang), style = MaterialTheme.typography.bodyLarge)
+                // Trade names without their own text show their type's description.
+                Text(s.desc(lang).ifBlank { type?.desc(lang).orEmpty() }, style = MaterialTheme.typography.bodyLarge)
             }
 
             SectionTitle(str.regionTitle)
