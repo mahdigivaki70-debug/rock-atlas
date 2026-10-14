@@ -142,7 +142,7 @@ REGIONS = """
 # id | fa | en | ar | ru | types in this category (comma separated)
 CATEGORIES = """
 marble|مرمر|Marble|رخام|Мрамор|marble,dolomitic,marmarite,serpentinite
-granite|گرانیت|Granite|غرانيت|Гранит|granite,basalt
+granite|گرانیت|Granite|غرانيت|Гранит|granite,basalt,porphyry
 limestone|لایمستون (سنگ آهک)|Limestone|حجر جيري|Известняк|limestone
 travertine|تراورتن|Travertine|ترافرتين|Травертин|travertine
 sandstone|ماسه‌سنگ|Sandstone|حجر رملي|Песчаник|sandstone

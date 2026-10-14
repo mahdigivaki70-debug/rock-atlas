@@ -14,8 +14,9 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import i18n_data as T  # noqa: E402
+import more_stones as M  # noqa: E402
 
-SEED_VERSION = 3
+SEED_VERSION = 4
 
 # id: (fa, en, description, density kg/m3, water absorption %, compressive MPa,
 #      flexural MPa, mohs, acid reaction, standard, default finishes, default uses, wiki)
@@ -235,6 +236,8 @@ STONE_LAB = {
 def table(text, cols):
     rows = {}
     for line in text.strip().splitlines():
+        if not line.strip():
+            continue
         parts = [c.strip() for c in line.split("|")]
         assert len(parts) == cols, (len(parts), line)
         assert parts[0] not in rows, parts[0]
@@ -244,11 +247,11 @@ def table(text, cols):
 
 def main():
     root = pathlib.Path(__file__).resolve().parent.parent
-    countries = table(T.COUNTRIES, 4)
-    regions = table(T.REGIONS, 4)
+    countries = table(T.COUNTRIES + M.COUNTRIES, 4)
+    regions = table(T.REGIONS + M.REGIONS, 4)
     cats = table(T.CATEGORIES, 6)
-    type_tr = table(T.TYPES, 6)
-    stone_tr = table(T.STONES, 6)
+    type_tr = table(T.TYPES + M.TYPES_TR, 6)
+    stone_tr = table(T.STONES + M.STONES_TR, 6)
 
     type_to_cat = {}
     categories = []
@@ -259,7 +262,7 @@ def main():
 
     types = []
     type_ids = set()
-    for i, t in enumerate(TYPES):
+    for i, t in enumerate(TYPES + M.TYPES):
         (tid, fa, en, desc, dens, absn, comp, flex, mohs, acid, std, fin, uses, wiki) = t
         type_ids.add(tid)
         tr = type_tr[tid]
@@ -280,7 +283,9 @@ def main():
     colors = {"wh", "cr", "ye", "bn", "rd", "pk", "gn", "bl", "gy", "bk", "pu"}
     patterns = {"vein", "cloud", "uni", "grain", "pore", "band"}
     stones, seen = [], set()
-    for line in STONES.strip().splitlines():
+    for line in (STONES + M.STONES).strip().splitlines():
+        if not line.strip():
+            continue
         cols = line.split("|")
         assert len(cols) == 13, (len(cols), line)
         (sid, fa, en, aliases, tid, color, pattern, region, country,
