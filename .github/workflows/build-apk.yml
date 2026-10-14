@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -23,3 +23,11 @@ jobs:
         with:
           name: rock-atlas-debug-apk
           path: app/build/outputs/apk/debug/*.apk
+      - name: Publish APK as the "latest" release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk rock-atlas.apk
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest rock-atlas.apk --title "اطلس سنگ‌های ساختمانی (آخرین نسخه)" --notes "ساخته‌شده توسط مهدی گیوکی · +989192950266 · www.nexstone.ir" --target "$GITHUB_SHA"
