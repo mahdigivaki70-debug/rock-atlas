@@ -46,6 +46,6 @@ class RockAtlasApp : Application(), ImageLoaderFactory {
 
     companion object {
         const val USER_AGENT = "RockAtlas/1.0 (Android building-stone atlas)"
-        val ALLOWED_HOSTS = setOf("en.wikipedia.org", "upload.wikimedia.org")
+        val ALLOWED_HOSTS = setOf("en.wikipedia.org", "upload.wikimedia.org", "nexstone.ir")
     }
 }

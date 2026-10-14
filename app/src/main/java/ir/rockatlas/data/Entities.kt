@@ -81,7 +81,12 @@ data class Stone(
     val descAr: String,
     val descRu: String,
     val wikiTitle: String?,
+    /** JSON of a [SeedLab] when the producer published measured values, else null. */
+    val labJson: String?,
 ) {
+    /** Producer-measured lab values; null means use the type's typical ranges. */
+    fun lab(): SeedLab? = labJson?.let { runCatching { labFormat.decodeFromString(SeedLab.serializer(), it) }.getOrNull() }
+
     fun name(lang: Lang) = pick(lang, nameFa, nameEn, nameAr, nameRu)
     /** The name in the other script, shown under the main name. */
     fun subtitle(lang: Lang) = if (lang == Lang.EN) nameFa else nameEn
@@ -111,6 +116,8 @@ data class CachedImage(
 @Entity(tableName = "favorites")
 data class Favorite(@PrimaryKey val stoneId: String)
 
+private val labFormat = kotlinx.serialization.json.Json { ignoreUnknownKeys = true }
+
 internal fun pick(lang: Lang, fa: String, en: String, ar: String, ru: String) = when (lang) {
     Lang.FA -> fa
     Lang.EN -> en
@@ -130,4 +137,5 @@ fun SeedStone.toEntity() = Stone(
     id, nameFa, nameEn, nameAr, nameRu, aliases, typeId, color, pattern,
     region, regionEn, regionAr, regionRu, country, countryEn, countryAr, countryRu,
     finishes, uses, description, descEn, descAr, descRu, wikiTitle,
+    lab?.let { labFormat.encodeToString(SeedLab.serializer(), it) },
 )

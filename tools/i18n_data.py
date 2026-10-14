@@ -117,6 +117,7 @@ REGIONS = """
 نهبندان، خراسان جنوبی|Nehbandan, South Khorasan|نهبندان، خراسان الجنوبية|Нехбендан, Южный Хорасан
 نی‌ریز، فارس|Neyriz, Fars|نيريز، فارس|Нейриз, Фарс
 هرسین، کرمانشاه|Harsin, Kermanshah|هرسين، كرمانشاه|Харсин, Керманшах
+کرمانشاه، استان کرمانشاه|Kermanshah, Kermanshah Province|كرمانشاه، محافظة كرمانشاه|Керманшах, провинция Керманшах
 هونان|Hunan|هونان|Хунань
 والدئوراس، گالیسیا|Valdeorras, Galicia|فالديوراس، غاليسيا|Вальдеоррас, Галисия
 ورتسا|Vratsa|فراتسا|Враца
@@ -198,6 +199,7 @@ sivec|سيفيتس|Сивец|Fine-grained white dolomitic marble similar to Tha
 dehbid|مرمريت دهبيد|Мармарит Дехбид|Cream to beige marmarite with light brown clouds; widely used for floors in Iran.|مرمريت كريمي إلى بيج بغيوم بنية فاتحة؛ واسع الاستخدام في الأرضيات بإيران.|Кремово-бежевый мармарит со светло-коричневыми облаками; широко используется для полов в Иране.
 harsin|مرمريت هرسين|Мармарит Харсин|Even cream marmarite with little waste; very common for flooring.|مرمريت كريمي متجانس قليل الهدر؛ شائع جداً للأرضيات.|Ровный кремовый мармарит с малыми отходами; очень популярен для полов.
 gohareh|مرمريت كوهره|Мармарит Гохаре|White to milky marmarite with soft clouds.|مرمريت أبيض إلى حليبي بغيوم ناعمة.|Белый или молочный мармарит с мягкими облаками.
+kermanshah_limestone|حجر كرمانشاه الجيري|Керманшахский известняк|Sedimentary calcium-carbonate limestone with a cream to light-beige base and an even texture. Its calm look and wide choice of finishes suit high-end facades, floors and interior cladding. Supplied as blocks, slabs, tiles and cut-to-size.|حجر جيري رسوبي من كربونات الكالسيوم بأرضية كريمية إلى بيج فاتح وملمس متجانس. مظهره الهادئ وقابليته لتشطيبات كثيرة يجعلانه مناسباً للواجهات الفاخرة والأرضيات والكسوة الداخلية. يتوفر كتلاً وألواحاً وبلاطاً وقصاً حسب الطلب.|Осадочный известняк из карбоната кальция с кремовым или светло-бежевым фоном и ровной текстурой. Спокойный вид и разнообразие обработки делают его подходящим для престижных фасадов, полов и внутренней облицовки. Поставляется блоками, слэбами, плиткой и в размер.
 jowshaqan|مرمريت جوشقان|Мармарит Джошакан|Light cream marmarite used for floors and stairs.|مرمريت كريمي فاتح للأرضيات والدرج.|Светло-кремовый мармарит для полов и лестниц.
 lashtar|مرمريت لاشتر|Мармарит Лаштар|Cream marmarite with a fine, even texture.|مرمريت كريمي بملمس دقيق ومتجانس.|Кремовый мармарит с мелкой ровной текстурой.
 abadeh|مرمريت آباده|Мармарит Абаде|Light marmarite with cream clouds from an old quarry in southern Iran.|مرمريت فاتح بغيوم كريمية من محجر قديم في جنوب إيران.|Светлый мармарит с кремовыми облаками из старого карьера на юге Ирана.

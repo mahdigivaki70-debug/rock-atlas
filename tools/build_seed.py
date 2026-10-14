@@ -15,7 +15,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import i18n_data as T  # noqa: E402
 
-SEED_VERSION = 2
+SEED_VERSION = 3
 
 # id: (fa, en, description, density kg/m3, water absorption %, compressive MPa,
 #      flexural MPa, mohs, acid reaction, standard, default finishes, default uses, wiki)
@@ -106,6 +106,7 @@ sivec|سیوِک|Sivec|Sivec white|dolomitic|wh|uni|پریلپ|مقدونیهٔ 
 dehbid|مرمریت دهبید|Dehbid Marble|دهبید کرم، Persian beige|marmarite|cr|cloud|دهبید، فارس|ایران|||مرمریت کرم تا بژ با ابرهای قهوه‌ای روشن؛ از مرمریت‌های پرکاربرد کف ساختمان در ایران.|
 harsin|مرمریت هرسین|Harsin Marble|هرسین کرم|marmarite|cr|uni|هرسین، کرمانشاه|ایران|||مرمریت کرم یکنواخت با درصد ضایعات کم؛ برای کف‌سازی بسیار رایج است.|
 gohareh|مرمریت گوهره|Gohareh Marble|گوهره خرم‌آباد|marmarite|wh|cloud|خرم‌آباد، لرستان|ایران|||مرمریت سفید تا شیری با ابرهای ملایم.|
+kermanshah_limestone|لایمستون کرمانشاه|Kermanshah Limestone|لایمستون کرم کرمانشاه، Persian cream limestone, NexStone limestone|limestone|cr|uni|کرمانشاه، استان کرمانشاه|ایران|pol,hon,bus,san,spl|fa,fl,wl,pv|سنگ آهک رسوبی از کربنات کلسیم با زمینهٔ کرم تا بژ روشن و بافت یکنواخت. ظاهر آرام و فرآوری‌پذیری بالا آن را برای نمای ساختمان‌های فاخر، کف و دیوارپوش داخلی مناسب کرده است. به صورت کوپ، اسلب، تایل و برش در ابعاد سفارشی عرضه می‌شود.|
 jowshaqan|مرمریت جوشقان|Jowshaqan Marble|جوشقان|marmarite|cr|cloud|جوشقان، اصفهان|ایران|||مرمریت کرم روشن؛ برای کف و پله استفاده می‌شود.|
 lashtar|مرمریت لاشتر|Lashtar Marble|لاشتر|marmarite|cr|uni|لاشتر، اصفهان|ایران|||مرمریت کرم با بافت ریز و یکنواخت.|
 abadeh|مرمریت آباده|Abadeh Marble|سنگ آباده|marmarite|cr|cloud|آباده، فارس|ایران|||مرمریت روشن با ابرهای کرم؛ از معادن قدیمی جنوب ایران.|
@@ -216,6 +217,21 @@ def parse_range(r):
     return {"min": r[0], "max": r[1]}
 
 
+# Lab values a producer published for one specific stone; shown instead of the
+# type's typical ranges. Units: density kg/m3, absorption %, strengths MPa,
+# abrasion mm (EN 14157 wide wheel), porosity %.
+STONE_LAB = {
+    "kermanshah_limestone": {
+        "density": (2500, 2650), "absorption": (0.5, 3.0), "compressive": (60, 120),
+        "flexural": (7, 12), "abrasion": (20, 24), "porosity": (1, 6),
+        "standard": "EN 1936, EN 13755, EN 1926, EN 12372, EN 14157",
+        "source": "NexStone (nexstone.ir)",
+        "sourceUrl": "https://nexstone.ir/stones/limestone/",
+        "imageUrl": "https://nexstone.ir/wp-content/themes/nexstone/assets/img/photos/limestone-polished-slab-1.jpg",
+    },
+}
+
+
 def table(text, cols):
     rows = {}
     for line in text.strip().splitlines():
@@ -288,7 +304,9 @@ def main():
             "uses": uses or type_defaults[tid]["uses"],
             "description": desc, "descEn": tr[3], "descAr": tr[4], "descRu": tr[5],
             "wikiTitle": wiki or None,
+            "lab": STONE_LAB.get(sid),
         })
+    assert set(STONE_LAB) <= seen, set(STONE_LAB) - seen
     extra = set(stone_tr) - seen
     assert not extra, f"translations for unknown stones: {extra}"
 

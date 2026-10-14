@@ -74,9 +74,11 @@ fun StoneDetailScreen(vm: MainViewModel, stoneId: String, onBack: () -> Unit, on
         Column(Modifier.padding(top = pad.calculateTopPadding()).verticalScroll(rememberScrollState()).padding(bottom = 24.dp)) {
             StoneImage(s, image, vm::requestImage, Modifier.fillMaxWidth().aspectRatio(4f / 3f))
             if (image != null && image.imageUrl.isNotEmpty()) {
+                val fromCommons = image.filePageUrl.startsWith("https://commons.wikimedia.org/")
                 TextButton(onClick = { openHttps(context, image.filePageUrl) }, modifier = Modifier.padding(horizontal = 8.dp)) {
                     Text(
-                        (if (image.generic) str.sampleImage(type?.name(lang).orEmpty()) else "") + str.imageSource,
+                        (if (image.generic) str.sampleImage(type?.name(lang).orEmpty()) else "") +
+                            if (fromCommons) str.imageSource else str.imageFrom(android.net.Uri.parse(image.filePageUrl).host.orEmpty()),
                         style = MaterialTheme.typography.labelSmall,
                     )
                 }
@@ -114,7 +116,8 @@ fun StoneDetailScreen(vm: MainViewModel, stoneId: String, onBack: () -> Unit, on
                 }
             }
 
-            if (type != null) LabProperties(type)
+            val lab = s.lab()
+            if (lab != null) ProducerLab(lab) else if (type != null) LabProperties(type)
 
             SectionTitle(str.usesTitle)
             FlowRow(Modifier.padding(horizontal = 16.dp)) {
@@ -166,6 +169,31 @@ private fun LabProperties(type: StoneType) {
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
     )
+}
+
+@Composable
+private fun ProducerLab(lab: ir.rockatlas.data.SeedLab) {
+    val s = strings
+    val context = LocalContext.current
+    fun r(v: List<Double>) = v.first() to v.last()
+    SectionTitle(s.labProducer(lab.source))
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    ) {
+        Column(Modifier.padding(vertical = 4.dp)) {
+            r(lab.density).let { (a, b) -> PropRow(s.density, "${range(a, b)} kg/m³") }
+            r(lab.absorption).let { (a, b) -> PropRow(s.absorption, "${range(a, b)} %") }
+            r(lab.compressive).let { (a, b) -> PropRow(s.compressive, "${range(a, b)} MPa") }
+            lab.flexural?.let { v -> r(v).let { (a, b) -> PropRow(s.flexural, "${range(a, b)} MPa") } }
+            lab.abrasion?.let { v -> r(v).let { (a, b) -> PropRow(s.abrasion, "${range(a, b)} mm") } }
+            lab.porosity?.let { v -> r(v).let { (a, b) -> PropRow(s.porosity, "${range(a, b)} %") } }
+            PropRow(s.standard, lab.standard, last = true)
+        }
+    }
+    TextButton(onClick = { openHttps(context, lab.sourceUrl) }, modifier = Modifier.padding(horizontal = 8.dp)) {
+        Text(s.labProducerNote + " " + lab.sourceUrl.removePrefix("https://"), style = MaterialTheme.typography.bodySmall)
+    }
 }
 
 @Composable

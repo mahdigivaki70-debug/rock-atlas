@@ -57,6 +57,11 @@ class Repository(
         try {
             imageGate.withPermit {
                 val stone = dao.stoneNow(stoneId) ?: return
+                // A producer photo from the seed wins over a Wikipedia lookup.
+                stone.lab()?.imageUrl?.takeIf { it.startsWith(PRODUCER_IMAGE_PREFIX) }?.let { url ->
+                    dao.putImage(CachedImage(stoneId, url, stone.lab()!!.sourceUrl, generic = false, fetchedAt = now))
+                    return
+                }
                 val type = dao.typeNow(stone.typeId)
                 val specific = stone.wikiTitle?.let { wiki.lookup(it) }
                 val found = specific ?: type?.let { wiki.lookup(it.wikiTitle) }
@@ -76,6 +81,7 @@ class Repository(
     }
 
     private companion object {
+        const val PRODUCER_IMAGE_PREFIX = "https://nexstone.ir/"
         const val RETRY_MS = 3L * 24 * 60 * 60 * 1000
     }
 }

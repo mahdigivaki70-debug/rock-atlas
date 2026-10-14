@@ -76,4 +76,20 @@ data class SeedStone(
     val descAr: String,
     val descRu: String,
     val wikiTitle: String? = null,
+    val lab: SeedLab? = null,
+)
+
+/** Lab values a producer published for one specific stone (ranges as [min, max]). */
+@Serializable
+data class SeedLab(
+    val density: List<Double>,
+    val absorption: List<Double>,
+    val compressive: List<Double>,
+    val flexural: List<Double>? = null,
+    val abrasion: List<Double>? = null,
+    val porosity: List<Double>? = null,
+    val standard: String,
+    val source: String,
+    val sourceUrl: String,
+    val imageUrl: String? = null,
 )
