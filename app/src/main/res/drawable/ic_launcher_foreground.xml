@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stacked stone slabs inside the 72dp adaptive-icon safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#E9DCC7" android:pathData="M30,64 L54,52 L78,64 L54,76 Z" />
+    <path android:fillColor="#C9B79C" android:pathData="M30,64 L54,76 L54,82 L30,70 Z" />
+    <path android:fillColor="#A8957A" android:pathData="M78,64 L54,76 L54,82 L78,70 Z" />
+    <path android:fillColor="#F4EEE3" android:pathData="M34,48 L54,38 L74,48 L54,58 Z" />
+    <path android:fillColor="#D8CBB6" android:pathData="M34,48 L54,58 L54,63 L34,53 Z" />
+    <path android:fillColor="#B9A88E" android:pathData="M74,48 L54,58 L54,63 L74,53 Z" />
+    <path android:strokeColor="#8E7B63" android:strokeWidth="1.2" android:pathData="M42,47 Q50,44 56,48 T68,47" />
+</vector>
