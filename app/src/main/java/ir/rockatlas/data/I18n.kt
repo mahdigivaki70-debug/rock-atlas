@@ -402,7 +402,7 @@ data class Strings(
             madeBy = "Made by",
             author = "Mahdi Givaki",
             tapToEnter = "Tap to enter",
-            categoriesNote = "Categories follow the 11 main stone groups of (stone-universe.com)",
+            categoriesNote = "Categories follow the 11 main stone groups (stone-universe.com)",
         )
 
         private val RU = Strings(
