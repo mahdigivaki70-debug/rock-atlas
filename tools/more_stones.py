@@ -17,10 +17,15 @@ TYPES = [
      "سنگ آذرین با بلورهای درشت در زمینه‌ای ریزدانه، اغلب قرمز، بنفش یا قهوه‌ای. بسیار سخت و مقاوم است و به صورت کوبیک و تخته‌سنگ تیشه‌ای برای فرش خیابان و محوطه به کار می‌رود.",
      (2550, 2700), (0.2, 1.0), (150, 300), (15, 25), (6, 7), "none", "ASTM C615 (روش آزمون)",
      "spl,fla,san,hon", "pv,fa,fl,st", "Porphyry (geology)"),
+    ("semiprecious", "سنگ نیمه‌قیمتی", "Semiprecious stone",
+     "اسلب‌هایی که از قطعه‌های برش‌خوردهٔ عقیق، آمتیست، کوارتز و سنگ‌های مشابه با رزین ساخته می‌شوند. نیمه‌شفاف‌اند و برای دیوار نورپردازی‌شده، کانتر و میز لوکس به کار می‌روند. مشخصات به رزین و چیدمان قطعه‌ها بستگی دارد و اعداد تقریبی است.",
+     (2400, 2650), (0.05, 0.3), (80, 200), (20, 40), (6, 7), "none", "— (اسلب کامپوزیت؛ مقادیر تقریبی)",
+     "pol", "wl,ct,st", "Agate"),
 ]
 
 # id | ar name | ru name | en desc | ar desc | ru desc
 TYPES_TR = """
+semiprecious|حجر شبه كريم|Полудрагоценный камень|Slabs made from cut pieces of agate, amethyst, quartz and similar stones set in resin. Translucent; used for backlit walls, counters and luxury tables. Properties depend on the resin and layout, so the figures are approximate.|ألواح مصنوعة من قطع مقطوعة من العقيق والجمشت والكوارتز وما شابهها مثبتة بالراتنج. شبه شفافة؛ للجدران المضاءة من الخلف والكاونترات والطاولات الفاخرة. تعتمد الخصائص على الراتنج وترتيب القطع، لذا الأرقام تقريبية.|Плиты из распиленных кусочков агата, аметиста, кварца и подобных камней на смоле. Полупрозрачные; для стен с подсветкой, стоек и роскошных столов. Свойства зависят от смолы и раскладки, поэтому цифры приблизительные.
 porphyry|بورفير|Порфир|Igneous rock with large crystals set in a fine-grained matrix, often red, purple or brown. Very hard and durable; used as setts and split flags for streets and landscaping.|صخر ناري ببلورات كبيرة في أرضية دقيقة الحبيبات، غالباً أحمر أو بنفسجي أو بني. شديد الصلابة والمتانة؛ يُستخدم مكعبات وألواحاً مشقوقة للشوارع والمساحات الخارجية.|Магматическая порода с крупными кристаллами в мелкозернистой массе, часто красная, фиолетовая или коричневая. Очень твёрдая и прочная; идёт на брусчатку и колотые плиты для улиц и благоустройства.
 """
 
@@ -31,6 +36,8 @@ COUNTRIES = """
 سوئیس|Switzerland|سويسرا|Швейцария
 مصر|Egypt|مصر|Египет
 اسکاتلند|Scotland|اسكتلندا|Шотландия
+آرژانتین|Argentina|الأرجنتين|Аргентина
+ماداگاسکار|Madagascar|مدغشقر|Мадагаскар
 """
 
 # fa | en | ar | ru
@@ -84,6 +91,12 @@ REGIONS = """
 کوه‌های جلاله|Galala Mountains|جبال الجلالة|горы Галала
 سینا|Sinai|سيناء|Синай
 المنیا|Minya|المنيا|Минья
+ریو گرانده دو سول|Rio Grande do Sul|ريو غراندي دو سول|Риу-Гранди-ду-Сул
+ماداگاسکار|Madagascar|مدغشقر|Мадагаскар
+چوبوت، پاتاگونیا|Chubut, Patagonia|تشوبوت، باتاغونيا|Чубут, Патагония
+صحرای شرقی (جبل دخان)|Eastern Desert (Gebel Dokhan)|الصحراء الشرقية (جبل الدخان)|Восточная пустыня (Джебель-Духан)
+لاکونیا، پلوپونز|Laconia, Peloponnese|لاكونيا، البيلوبونيز|Лакония, Пелопоннес
+کیپ شمالی|Northern Cape|الكاب الشمالية|Северо-Капская провинция
 """
 
 # id|fa|en|aliases|type|color|pattern|region(fa)|country(fa)|finishes|uses|description(fa)|wiki
@@ -140,6 +153,9 @@ rosa_baveno|رزا باونو|Rosa Baveno|Baveno pink|granite|pk|grain|پیه‌
 bianco_montorfano|بیانکو مونتورفانو|Bianco Montorfano|Montorfano white|granite|wh|grain|پیه‌مونته|ایتالیا|||گرانیت سفید با دانه‌های سیاه میکا؛ در بناهای میلان به کار رفته است.|
 rosa_limbara|رزا لیمبارا|Rosa Limbara|Limbara pink, Rosa Sardo|granite|pk|grain|ساردینیا|ایتالیا|||گرانیت صورتی روشن با دانه‌های خاکستری از کوه لیمبارا.|
 porfido_trentino|پورفیری ترنتینو|Porfido Trentino|Trentino porphyry, Porfido|porphyry|rd|grain|ترنتینو|ایتالیا|||پورفیری قرمز قهوه‌ای تا بنفش؛ مشهورترین سنگ کوبیک برای فرش خیابان و میدان.|
+porfido_argentino|پورفیری آرژانتین|Argentine Porphyry|Porfido Argentino, Patagonian porphyry|porphyry|bn|grain|چوبوت، پاتاگونیا|آرژانتین|||پورفیری قهوه‌ای قرمز تا بنفش پاتاگونیا؛ برای کوبیک و فرش محوطه.|
+porfido_rosso_antico|پورفیری قرمز مصری|Imperial Porphyry|Porfido Rosso Antico, Egyptian red porphyry|porphyry|pu|grain|صحرای شرقی (جبل دخان)|مصر|||پورفیری ارغوانی با بلورهای ریز سفید که امپراتوران روم برای ستون و پیکره به کار می‌بردند.|
+porfido_verde_antico|پورفیری سبز یونانی|Green Porphyry|Porfido Verde Antico, Lapis Lacedaemonius|porphyry|gn|grain|لاکونیا، پلوپونز|یونان|||پورفیری سبز تیره با بلورهای سبز روشن؛ سنگ تزیینی کلاسیک روم و یونان.|
 rosso_vanga|روسو وانگا|Rosso Vanga|Vanga Red|granite|rd|grain|اسکونه|سوئد|||گرانیت قرمز درشت‌دانه با بلورهای آبی کوارتز.|
 bohus_red|بوهوس رد|Bohus Red|Bohus granite|granite|rd|grain|بوهوسلن|سوئد|||گرانیت قرمز سوئد برای نما، سنگ قبر و محوطه.|
 iddefjord|ایده‌فیورد|Iddefjord|Iddefjord granite|granite|gy|grain|ایده‌فیورد|نروژ|||گرانیت خاکستری روشن یکنواخت برای فرش و جدول خیابان.|
@@ -168,6 +184,11 @@ ardesia_genovese|اردزیای جنوا|Ardesia Genovese|Ardesia di Lavagna, Li
 deoli_green|اسلیت سبز دئولی|Deoli Green|Deoli slate|slate|gn|uni|راجستان|هند|||اسلیت سبز روشن هند برای کف و دیوار.|
 burlington|اسلیت برلینگتون|Burlington Slate|Westmorland green slate|slate|gn|uni|کامبریا|انگلستان|||اسلیت سبز روشن تا زیتونی شمال انگلستان؛ برای بام، کف و نما.|
 diyarbakir_basalt|بازالت دیاربکر|Diyarbakir Basalt|Diyarbakır black stone|basalt|bk|pore|دیاربکر|ترکیه|||بازالت سیاه متخلخل که دیوارهای تاریخی دیاربکر با آن ساخته شده‌اند.|
+blue_agate|عقیق آبی|Blue Agate|Agata blu, Agate slab|semiprecious|bl|band|ریو گرانده دو سول|برزیل|||اسلب نیمه‌شفاف از برش‌های عقیق آبی با حلقه‌های رنگی؛ برای دیوار و کانتر نورپردازی‌شده.|Agate
+amethyst|آمتیست|Amethyst|Ametista, Amethyst slab|semiprecious|pu|cloud|ریو گرانده دو سول|برزیل|||اسلب بنفش از قطعه‌های آمتیست؛ زیر نور پشت درخشش بنفش دارد.|Amethyst
+rose_quartz|رز کوارتز|Rose Quartz|Quarzo rosa, کوارتز صورتی|semiprecious|pk|cloud|ماداگاسکار|ماداگاسکار|||اسلب صورتی نیمه‌شفاف از قطعه‌های کوارتز صورتی.|Rose quartz
+tigers_eye|چشم ببر|Tiger's Eye|Tiger eye, Occhio di tigre|semiprecious|bn|band|کیپ شمالی|آفریقای جنوبی|||اسلب قهوه‌ای طلایی با درخشش ابریشمی از قطعه‌های سنگ چشم ببر.|Tiger's eye
+petrified_wood|چوب سنگ‌شده|Petrified Wood|Legno fossile, فسیل چوب|semiprecious|bn|band|ماداگاسکار|ماداگاسکار|||اسلب از برش‌های چوب فسیل‌شده با حلقه‌های رشد درخت؛ برای میز و دیوار.|Petrified wood
 """
 
 # id | ar name | ru name | en desc | ar desc | ru desc
@@ -224,6 +245,9 @@ rosa_baveno|روزا بافينو|Роза Бавено|Coarse-grained pink gran
 bianco_montorfano|بيانكو مونتورفانو|Бьянко Монторфано|White granite with black mica grains, used in Milan's buildings.|غرانيت أبيض بحبيبات ميكا سوداء، استُخدم في مباني ميلانو.|Белый гранит с чёрными зёрнами слюды; использовался в зданиях Милана.
 rosa_limbara|روزا ليمبارا|Роза Лимбара|Light pink granite with grey grains from Mount Limbara.|غرانيت وردي فاتح بحبيبات رمادية من جبل ليمبارا.|Светло-розовый гранит с серыми зёрнами с горы Лимбара.
 porfido_trentino|بورفير ترينتينو|Порфир Трентино|Red-brown to purple porphyry; the best-known setts for streets and squares.|بورفير أحمر بني إلى بنفسجي؛ أشهر مكعبات رصف الشوارع والساحات.|Красно-коричневый или фиолетовый порфир; самая известная брусчатка для улиц и площадей.
+porfido_argentino|بورفير أرجنتيني|Аргентинский порфир|Red-brown to purple Patagonian porphyry for setts and outdoor paving.|بورفير باتاغوني أحمر بني إلى بنفسجي لمكعبات الرصف والأرضيات الخارجية.|Красно-коричневый или фиолетовый патагонский порфир для брусчатки и мощения.
+porfido_rosso_antico|بورفير إمبراطوري|Императорский порфир|Purple porphyry with small white crystals, used by Roman emperors for columns and statues.|بورفير أرجواني ببلورات بيضاء صغيرة، استخدمه أباطرة روما للأعمدة والتماثيل.|Пурпурный порфир с мелкими белыми кристаллами; римские императоры использовали его для колонн и статуй.
+porfido_verde_antico|بورفير أخضر يوناني|Зелёный порфир|Dark green porphyry with pale green crystals; a classic Roman and Greek decorative stone.|بورفير أخضر داكن ببلورات خضراء فاتحة؛ حجر زخرفي روماني ويوناني كلاسيكي.|Тёмно-зелёный порфир со светло-зелёными кристаллами; классический римский и греческий декоративный камень.
 rosso_vanga|روسو فانغا|Россо Ванга|Coarse red granite with blue quartz crystals.|غرانيت أحمر خشن ببلورات كوارتز زرقاء.|Крупнозернистый красный гранит с голубыми кристаллами кварца.
 bohus_red|بوهوس الأحمر|Бохус Ред|Swedish red granite for facades, memorials and landscaping.|غرانيت سويدي أحمر للواجهات والنصب وتنسيق المساحات.|Шведский красный гранит для фасадов, памятников и благоустройства.
 iddefjord|إيدفيورد|Иддефьорд|Even light grey granite for paving and kerbs.|غرانيت رمادي فاتح متجانس للرصف والأرصفة.|Ровный светло-серый гранит для мощения и бордюров.
@@ -252,4 +276,9 @@ ardesia_genovese|أردواز جنوة|Генуэзский сланец|Black L
 deoli_green|أردواز ديولي الأخضر|Деоли Грин|Light green Indian slate for floors and walls.|أردواز هندي أخضر فاتح للأرضيات والجدران.|Светло-зелёный индийский сланец для полов и стен.
 burlington|أردواز برلنغتون|Сланец Берлингтон|Light green to olive slate from northern England; for roofs, floors and facades.|أردواز أخضر فاتح إلى زيتوني من شمال إنجلترا؛ للأسطح والأرضيات والواجهات.|Светло-зелёный или оливковый сланец с севера Англии; для кровли, полов и фасадов.
 diyarbakir_basalt|بازلت ديار بكر|Базальт Диярбакыр|Porous black basalt of Diyarbakır's historic city walls.|بازلت أسود مسامي بُنيت منه أسوار ديار بكر التاريخية.|Пористый чёрный базальт исторических стен Диярбакыра.
+blue_agate|عقيق أزرق|Голубой агат|Translucent slab of blue agate slices with coloured rings; for backlit walls and counters.|لوح شبه شفاف من شرائح العقيق الأزرق بحلقات ملونة؛ للجدران والكاونترات المضاءة.|Полупрозрачная плита из срезов голубого агата с цветными кольцами; для стен и стоек с подсветкой.
+amethyst|جمشت|Аметист|Purple slab of amethyst pieces that glows violet when backlit.|لوح بنفسجي من قطع الجمشت يتوهج بالبنفسجي عند الإضاءة الخلفية.|Фиолетовая плита из кусочков аметиста; светится фиолетовым при подсветке.
+rose_quartz|كوارتز وردي|Розовый кварц|Translucent pink slab of rose quartz pieces.|لوح وردي شبه شفاف من قطع الكوارتز الوردي.|Полупрозрачная розовая плита из кусочков розового кварца.
+tigers_eye|عين النمر|Тигровый глаз|Golden-brown slab with a silky shimmer, made from tiger's eye pieces.|لوح بني ذهبي بلمعان حريري من قطع عين النمر.|Золотисто-коричневая плита с шелковистым отливом из кусочков тигрового глаза.
+petrified_wood|خشب متحجر|Окаменелое дерево|Slab of petrified wood slices showing the tree's growth rings; for tables and walls.|لوح من شرائح الخشب المتحجر تظهر فيه حلقات نمو الشجرة؛ للطاولات والجدران.|Плита из срезов окаменелого дерева с годичными кольцами; для столов и стен.
 """

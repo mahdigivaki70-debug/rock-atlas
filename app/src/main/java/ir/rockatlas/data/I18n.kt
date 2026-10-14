@@ -212,7 +212,7 @@ data class Strings(
             madeBy = "ساخته‌شده توسط",
             author = "مهدی گیوکی",
             tapToEnter = "برای ورود لمس کنید",
-            categoriesNote = "دسته‌بندی بر اساس انواع سنگ در بازار جهانی (stonecontact.com)",
+            categoriesNote = "دسته‌بندی بر اساس ۱۱ گروه اصلی سنگ (stone-universe.com)",
         )
 
         private val AR = Strings(
@@ -307,7 +307,7 @@ data class Strings(
             madeBy = "من إعداد",
             author = "مهدي كيوكي",
             tapToEnter = "اضغط للدخول",
-            categoriesNote = "التصنيف حسب أنواع الأحجار في السوق العالمية (stonecontact.com)",
+            categoriesNote = "التصنيف حسب المجموعات الرئيسية الإحدى عشرة للأحجار (stone-universe.com)",
         )
 
         private val EN = Strings(
@@ -402,7 +402,7 @@ data class Strings(
             madeBy = "Made by",
             author = "Mahdi Givaki",
             tapToEnter = "Tap to enter",
-            categoriesNote = "Categories follow the stone types of the world market (stonecontact.com)",
+            categoriesNote = "Categories follow the 11 main stone groups of (stone-universe.com)",
         )
 
         private val RU = Strings(
@@ -497,7 +497,7 @@ data class Strings(
             madeBy = "Разработчик",
             author = "Махди Гиваки",
             tapToEnter = "Нажмите, чтобы войти",
-            categoriesNote = "Категории соответствуют типам камня мирового рынка (stonecontact.com)",
+            categoriesNote = "Категории соответствуют 11 основным группам камня (stone-universe.com)",
         )
     }
 }

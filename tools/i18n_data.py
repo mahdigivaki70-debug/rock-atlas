@@ -138,17 +138,20 @@ REGIONS = """
 یورکشایر|Yorkshire|يوركشاير|Йоркшир
 """
 
-# Top-level categories, following the stone-type grouping used by stonecontact.com.
+# Top-level categories: the 11 material groups of stone-universe.com/materials.
 # id | fa | en | ar | ru | types in this category (comma separated)
 CATEGORIES = """
-marble|مرمر|Marble|رخام|Мрамор|marble,dolomitic,marmarite,serpentinite
-granite|گرانیت|Granite|غرانيت|Гранит|granite,basalt,porphyry
+granite|گرانیت|Granite|غرانيت|Гранит|granite,basalt
 limestone|لایمستون (سنگ آهک)|Limestone|حجر جيري|Известняк|limestone
-travertine|تراورتن|Travertine|ترافرتين|Травертин|travertine
-sandstone|ماسه‌سنگ|Sandstone|حجر رملي|Песчаник|sandstone
-quartzite|کوارتزیت|Quartzite|كوارتزيت|Кварцит|quartzite
+marble|مرمر|Marble|رخام|Мрамор|marble,dolomitic,marmarite
 onyx|اونیکس (مرمر سنگ)|Onyx|أونيكس|Оникс|onyx
+porphyry|پورفیری|Porphyry|بورفير|Порфир|porphyry
+quartzite|کوارتزیت|Quartzite|كوارتزيت|Кварцит|quartzite
+sandstone|ماسه‌سنگ|Sandstone|حجر رملي|Песчаник|sandstone
+semiprecious|سنگ‌های نیمه‌قیمتی|Semiprecious|أحجار شبه كريمة|Полудрагоценные камни|semiprecious
+serpentine|سرپانتین (سنگ سبز)|Serpentine|سربنتين|Серпентинит|serpentinite
 slate|اسلیت|Slate|أردواز|Сланец|slate
+travertine|تراورتن|Travertine|ترافرتين|Травертин|travertine
 """
 
 # id | ar name | ru name | en description | ar description | ru description

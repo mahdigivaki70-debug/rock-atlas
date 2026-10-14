@@ -16,7 +16,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import i18n_data as T  # noqa: E402
 import more_stones as M  # noqa: E402
 
-SEED_VERSION = 4
+SEED_VERSION = 5
 
 # id: (fa, en, description, density kg/m3, water absorption %, compressive MPa,
 #      flexural MPa, mohs, acid reaction, standard, default finishes, default uses, wiki)
