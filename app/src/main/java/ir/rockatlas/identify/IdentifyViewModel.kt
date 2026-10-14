@@ -21,7 +21,8 @@ data class IdentifyState(
     val tests: FieldTests = FieldTests(),
     val results: List<Match> = emptyList(),
     val busy: Boolean = false,
-    val error: String? = null,
+    /** The picked file could not be read as an image. */
+    val badImage: Boolean = false,
     val modelLoaded: Boolean = false,
 )
 
@@ -38,12 +39,12 @@ class IdentifyViewModel(app: Application) : AndroidViewModel(app) {
     var pendingCaptureUri: Uri? = null
 
     fun onImage(source: Uri) {
-        _state.update { it.copy(busy = true, error = null) }
+        _state.update { it.copy(busy = true, badImage = false) }
         viewModelScope.launch {
             val ctx = getApplication<Application>()
             val imported = withContext(Dispatchers.IO) { ImageIO.importImage(ctx, source) }
             if (imported == null) {
-                _state.update { it.copy(busy = false, error = "این فایل تصویر معتبری نیست یا خیلی بزرگ است.") }
+                _state.update { it.copy(busy = false, badImage = true) }
                 return@launch
             }
             val (bmp, uri) = imported

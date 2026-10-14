@@ -10,6 +10,12 @@ data class SearchFilters(
 
 /** In-memory search: the catalogue is a few hundred rows, so this stays instant. */
 object SearchEngine {
+    /** Category names, set once categories load; used only for matching. */
+    @Volatile
+    var categoryNames: Map<String, String> = emptyMap()
+
+    private fun categoryName(id: String?) = id?.let { categoryNames[it] }.orEmpty()
+
     fun search(
         query: String,
         filters: SearchFilters,
@@ -28,12 +34,18 @@ object SearchEngine {
             .mapNotNull { stone ->
                 if (terms.isEmpty()) return@mapNotNull stone to 0
                 val type = types[stone.typeId]
-                val name = TextNormalizer.normalize("${stone.nameFa} ${stone.nameEn} ${stone.aliases}")
+                // Every language is searched, so an English name works in the Persian UI too.
+                val name = TextNormalizer.normalize(
+                    "${stone.nameFa} ${stone.nameEn} ${stone.nameAr} ${stone.nameRu} ${stone.aliases}",
+                )
                 val rest = TextNormalizer.normalize(
                     listOf(
-                        stone.region, stone.country, stone.description,
-                        type?.nameFa.orEmpty(), type?.nameEn.orEmpty(),
-                        Labels.color(stone.color).fa, Labels.patterns[stone.pattern].orEmpty(),
+                        stone.region, stone.regionEn, stone.regionAr, stone.regionRu,
+                        stone.country, stone.countryEn, stone.countryAr, stone.countryRu,
+                        stone.description, stone.descEn,
+                        type?.nameFa.orEmpty(), type?.nameEn.orEmpty(), type?.nameAr.orEmpty(), type?.nameRu.orEmpty(),
+                        categoryName(type?.categoryId),
+                        Labels.color(stone.color).label.all, Labels.patterns[stone.pattern]?.all.orEmpty(),
                     ).joinToString(" "),
                 )
                 var score = 0

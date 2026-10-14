@@ -9,6 +9,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
+import ir.rockatlas.data.Lang
 
 private val Light = lightColorScheme(
     primary = Color(0xFF6B4F3A),
@@ -38,10 +39,14 @@ private val Dark = darkColorScheme(
     surfaceContainer = Color(0xFF26211D),
 )
 
-/** The whole UI is Persian, so layout is always right-to-left regardless of device language. */
+/** Layout follows the chosen app language: right-to-left for Persian and Arabic. */
 @Composable
-fun RockAtlasTheme(content: @Composable () -> Unit) {
+fun RockAtlasTheme(lang: Lang, content: @Composable () -> Unit) {
     MaterialTheme(colorScheme = if (isSystemInDarkTheme()) Dark else Light) {
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl, content = content)
+        CompositionLocalProvider(
+            LocalLang provides lang,
+            LocalLayoutDirection provides if (lang.rtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
+            content = content,
+        )
     }
 }

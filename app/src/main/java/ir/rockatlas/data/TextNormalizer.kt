@@ -20,7 +20,8 @@ object TextNormalizer {
             }
             // Drop Arabic diacritics and tatweel.
             if (c in 'ً'..'ٟ' || c == 'ٰ' || c == 'ـ') continue
-            sb.append(c.lowercaseChar())
+            val lower = c.lowercaseChar()
+            sb.append(if (lower == 'ё') 'е' else lower)
         }
         return sb.toString().replace(Regex("\\s+"), " ").trim()
     }

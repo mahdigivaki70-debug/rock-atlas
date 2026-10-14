@@ -1,21 +1,34 @@
 package ir.rockatlas.ui
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import ir.rockatlas.RockAtlasApp
 import ir.rockatlas.data.CachedImage
+import ir.rockatlas.data.Category
+import ir.rockatlas.data.Lang
+import ir.rockatlas.data.SearchEngine
 import ir.rockatlas.data.Stone
 import ir.rockatlas.data.StoneType
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
     val repo = (app as RockAtlasApp).repository
+    private val settings = app.getSharedPreferences("settings", Context.MODE_PRIVATE)
 
+    private val _lang = MutableStateFlow(Lang.fromCode(settings.getString("lang", null)) ?: Lang.fromDevice())
+    val lang: StateFlow<Lang> = _lang
+
+    val categories: StateFlow<List<Category>> = repo.categories
+        .onEach { list -> SearchEngine.categoryNames = list.associate { it.id to "${it.nameFa} ${it.nameEn} ${it.nameAr} ${it.nameRu}" } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val types: StateFlow<List<StoneType>> = repo.types.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val typeMap: StateFlow<Map<String, StoneType>> =
         repo.types.map { l -> l.associateBy { it.id } }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
@@ -25,6 +38,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     init {
         viewModelScope.launch { runCatching { repo.ensureSeeded() } }
+    }
+
+    fun setLang(lang: Lang) {
+        _lang.value = lang
+        settings.edit().putString("lang", lang.code).apply()
     }
 
     fun requestImage(stoneId: String) {

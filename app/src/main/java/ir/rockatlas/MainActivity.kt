@@ -40,15 +40,17 @@ import ir.rockatlas.ui.RegionsScreen
 import ir.rockatlas.ui.RockAtlasTheme
 import ir.rockatlas.ui.SearchScreen
 import ir.rockatlas.ui.StoneDetailScreen
-import ir.rockatlas.ui.TypeScreen
+import ir.rockatlas.ui.CategoryScreen
+import ir.rockatlas.data.Strings
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
-private data class Tab(val route: String, val label: String, val icon: ImageVector)
+private data class Tab(val route: String, val label: (Strings) -> String, val icon: ImageVector)
 
 private val tabs = listOf(
-    Tab("atlas", "اطلس", Icons.Outlined.MenuBook),
-    Tab("search", "جستجو", Icons.Outlined.Search),
-    Tab("identify", "شناسایی", Icons.Outlined.CameraAlt),
-    Tab("regions", "مناطق", Icons.Outlined.Map),
+    Tab("atlas", { it.tabAtlas }, Icons.Outlined.MenuBook),
+    Tab("search", { it.tabSearch }, Icons.Outlined.Search),
+    Tab("identify", { it.tabIdentify }, Icons.Outlined.CameraAlt),
+    Tab("regions", { it.tabRegions }, Icons.Outlined.Map),
 )
 
 class MainActivity : ComponentActivity() {
@@ -58,10 +60,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            RockAtlasTheme {
+            val lang by vm.lang.collectAsStateWithLifecycle()
+            RockAtlasTheme(lang) {
                 var showIntro by rememberSaveable { mutableStateOf(true) }
                 if (showIntro) {
-                    IntroScreen(onDone = { showIntro = false })
+                    IntroScreen(onDone = { showIntro = false }, onLang = vm::setLang)
                     return@RockAtlasTheme
                 }
                 val nav = rememberNavController()
@@ -75,7 +78,7 @@ class MainActivity : ComponentActivity() {
                                     selected = route == tab.route,
                                     onClick = { nav.goTab(tab.route) },
                                     icon = { Icon(tab.icon, null) },
-                                    label = { Text(tab.label) },
+                                    label = { Text(tab.label(Strings.of(lang))) },
                                 )
                             }
                         }
@@ -83,9 +86,9 @@ class MainActivity : ComponentActivity() {
                 ) { pad ->
                     NavHost(nav, startDestination = "atlas", modifier = Modifier.padding(bottom = pad.calculateBottomPadding())) {
                         val openStone: (String) -> Unit = { nav.navigate("stone/${Uri.encode(it)}") }
-                        val openType: (String) -> Unit = { nav.navigate("type/${Uri.encode(it)}") }
+                        val openCategory: (String) -> Unit = { nav.navigate("category/${Uri.encode(it)}") }
                         composable("atlas") {
-                            AtlasScreen(vm, onType = openType, onFavorites = { nav.navigate("search?fav=true") }, onAbout = { nav.navigate("about") })
+                            AtlasScreen(vm, onCategory = openCategory, onFavorites = { nav.navigate("search?fav=true") }, onAbout = { nav.navigate("about") })
                         }
                         composable(
                             "search?country={country}&fav={fav}",
@@ -101,14 +104,14 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("regions") { RegionsScreen(vm, openStone) }
                         composable("about") { AboutScreen(onBack = { nav.popBackStack() }) }
-                        composable("type/{id}") { e ->
-                            TypeScreen(vm, e.arguments?.getString("id").orEmpty(), openStone, onBack = { nav.popBackStack() })
+                        composable("category/{id}") { e ->
+                            CategoryScreen(vm, e.arguments?.getString("id").orEmpty(), openStone, onBack = { nav.popBackStack() })
                         }
                         composable("stone/{id}") { e ->
                             StoneDetailScreen(
                                 vm, e.arguments?.getString("id").orEmpty(),
                                 onBack = { nav.popBackStack() },
-                                onType = openType,
+                                onCategory = openCategory,
                                 onCountry = { nav.navigate("search?country=${Uri.encode(it)}") },
                             )
                         }

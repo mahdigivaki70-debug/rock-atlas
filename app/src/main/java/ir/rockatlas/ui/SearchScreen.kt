@@ -49,6 +49,8 @@ fun SearchScreen(vm: MainViewModel, initialCountry: String?, initialFavorites: B
     val images by vm.images.collectAsStateWithLifecycle()
     val favorites by vm.favorites.collectAsStateWithLifecycle()
     val focus = LocalFocusManager.current
+    val lang = LocalLang.current
+    val str = strings
 
     var query by rememberSaveable { mutableStateOf("") }
     var debounced by rememberSaveable { mutableStateOf("") }
@@ -66,14 +68,15 @@ fun SearchScreen(vm: MainViewModel, initialCountry: String?, initialFavorites: B
     val results = remember(debounced, filters, stones, typeMap, favorites) {
         SearchEngine.search(debounced, filters, stones, typeMap, favorites)
     }
-    val countries = remember(stones) {
-        stones.groupingBy { it.country }.eachCount().entries
-            .sortedWith(compareByDescending<Map.Entry<String, Int>> { it.key == "ایران" }.thenByDescending { it.value })
-            .map { it.key }
+    // Keys stay Persian (stable filter values); labels follow the app language.
+    val countries = remember(stones, lang) {
+        stones.groupBy { it.country }.entries
+            .sortedWith(compareByDescending<Map.Entry<String, List<ir.rockatlas.data.Stone>>> { it.key == "ایران" }.thenByDescending { it.value.size })
+            .map { it.key to it.value.first().country(lang) }
     }
     val anyFilter = typeId != null || color != null || use != null || country != null || onlyFav
 
-    Scaffold(topBar = { TopAppBar(title = { Text("جستجو") }) }) { pad ->
+    Scaffold(topBar = { TopAppBar(title = { Text(str.searchTitle) }) }) { pad ->
         LazyColumn(contentPadding = PaddingValues(top = pad.calculateTopPadding(), bottom = 16.dp)) {
             item {
                 OutlinedTextField(
@@ -81,10 +84,10 @@ fun SearchScreen(vm: MainViewModel, initialCountry: String?, initialFavorites: B
                     onValueChange = { query = TextNormalizer.cleanQuery(it) },
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                     singleLine = true,
-                    placeholder = { Text("نام سنگ، معدن، شهر، رنگ…  مثلاً تراورتن محلات") },
+                    placeholder = { Text(str.searchHint) },
                     leadingIcon = { Icon(Icons.Filled.Search, null) },
                     trailingIcon = {
-                        if (query.isNotEmpty()) IconButton(onClick = { query = "" }) { Icon(Icons.Filled.Clear, "پاک کردن") }
+                        if (query.isNotEmpty()) IconButton(onClick = { query = "" }) { Icon(Icons.Filled.Clear, str.clear) }
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                     keyboardActions = androidx.compose.foundation.text.KeyboardActions(onSearch = { focus.clearFocus() }),
@@ -92,26 +95,22 @@ fun SearchScreen(vm: MainViewModel, initialCountry: String?, initialFavorites: B
             }
             item {
                 Column {
-                    ChipRow(
-                        "نوع",
-                        types.map { it.id to it.nameFa },
-                        typeId,
-                    ) { typeId = it }
-                    ChipRow("رنگ", Labels.colors.map { it.code to it.fa }, color, dot = true) { color = it }
-                    ChipRow("کاربرد", Labels.uses.entries.map { it.key to it.value }, use) { use = it }
-                    ChipRow("کشور", countries.map { it to it }, country) { country = it }
+                    ChipRow(str.filterType, types.map { it.id to it.name(lang) }, typeId) { typeId = it }
+                    ChipRow(str.filterColor, Labels.colors.map { it.code to it.name(lang) }, color, dot = true) { color = it }
+                    ChipRow(str.filterUse, Labels.uses.entries.map { it.key to it.value[lang] }, use) { use = it }
+                    ChipRow(str.filterCountry, countries, country) { country = it }
                     LazyRow(contentPadding = PaddingValues(horizontal = 16.dp)) {
                         item {
                             FilterChip(
                                 selected = onlyFav,
                                 onClick = { onlyFav = !onlyFav },
-                                label = { Text("فقط علاقه‌مندی‌ها") },
+                                label = { Text(str.onlyFavorites) },
                                 leadingIcon = { Icon(Icons.Filled.Favorite, null) },
                             )
                         }
                         if (anyFilter) item {
                             TextButton(onClick = { typeId = null; color = null; use = null; country = null; onlyFav = false }) {
-                                Text("حذف همهٔ فیلترها")
+                                Text(str.clearFilters)
                             }
                         }
                     }
@@ -119,13 +118,13 @@ fun SearchScreen(vm: MainViewModel, initialCountry: String?, initialFavorites: B
             }
             item {
                 Text(
-                    "${fa(results.size)} نتیجه",
+                    str.results(num(results.size)),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
             }
-            if (results.isEmpty()) item { EmptyNote("سنگی با این مشخصات پیدا نشد. املای دیگری را امتحان کنید یا فیلترها را کم کنید.") }
+            if (results.isEmpty()) item { EmptyNote(str.noResults) }
             items(results, key = { it.id }) { s ->
                 StoneRow(s, typeMap[s.typeId], images[s.id], vm::requestImage, onClick = { onStone(s.id) })
             }

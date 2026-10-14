@@ -35,26 +35,27 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(onBack: () -> Unit) {
+    val str = strings
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("درباره، سازنده و منابع") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "بازگشت") } },
+                title = { Text(str.aboutTitle) },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, str.back) } },
             )
         },
     ) { pad ->
         Column(Modifier.padding(top = pad.calculateTopPadding()).verticalScroll(rememberScrollState()).padding(16.dp)) {
             CreditsCard()
             Spacer(Modifier.height(8.dp))
-            Para("اطلس سنگ‌های ساختمانی، راهنمای آفلاین سنگ‌های نما و کف ایران و جهان است: نوع سنگ، رنگ، معدن و منطقه، کاربرد، فرآوری سطح و مشخصات آزمایشگاهی.")
-            Head("مشخصات آزمایشگاهی")
-            Para("اعداد چگالی، جذب آب، مقاومت فشاری و خمشی و سختی، محدودهٔ معمول هر نوع سنگ بر پایهٔ استانداردهای ASTM برای سنگ ساختمانی (C615، C503، C1527، C568، C616، C629، C1526) و منابع عمومی است. این‌ها نتیجهٔ آزمایش معدن خاصی نیستند و برای طراحی سازه باید گزارش آزمون همان محموله را گرفت.")
-            Head("تصاویر")
-            Para("تصاویر هنگام اتصال به اینترنت از ویکی‌مدیا کامانز (از طریق ویکی‌پدیا) دریافت و روی گوشی ذخیره می‌شوند. فقط تصاویر با مجوز آزاد کامانز نمایش داده می‌شوند و زیر هر تصویر پیوند صفحهٔ فایل، شامل نام پدیدآورنده و مجوز، آمده است. اگر برای سنگی تصویر اختصاصی نباشد، تصویر نمونهٔ همان نوع سنگ با برچسب «تصویر نمونه» نشان داده می‌شود.")
-            Head("شناسایی با عکس")
-            Para("شناسایی کاملاً روی گوشی انجام می‌شود و عکس شما به هیچ سروری ارسال نمی‌شود. رنگ و بافت عکس به همراه آزمون‌های ساده با بانک اطلاعاتی مقایسه می‌شود. گوگل لنز API عمومی ندارد؛ دکمهٔ «پرسیدن از گوگل لنز» فقط عکس را به اپ لنز روی گوشی شما می‌دهد.")
-            Head("حریم خصوصی و امنیت")
-            Para("اپ فقط مجوز اینترنت دارد (برای عکس‌ها)، فقط با HTTPS و فقط با دامنه‌های ویکی‌پدیا و ویکی‌مدیا ارتباط می‌گیرد، هیچ حساب کاربری، تبلیغ یا ردیاب ندارد و اطلاعات مکان (EXIF) را از عکس‌ها حذف می‌کند.")
+            Para(str.aboutIntro)
+            Head(str.aboutLabHead)
+            Para(str.aboutLabText)
+            Head(str.aboutImagesHead)
+            Para(str.aboutImagesText)
+            Head(str.aboutIdentHead)
+            Para(str.aboutIdentText)
+            Head(str.aboutPrivacyHead)
+            Para(str.aboutPrivacyText)
         }
     }
 }
@@ -67,8 +68,8 @@ fun CreditsCard() {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
     ) {
         Column(Modifier.padding(16.dp)) {
-            Text("سازنده", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-            Text(Credits.AUTHOR, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(strings.creator, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+            Text(strings.author, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             TextButton(onClick = { dial(context, Credits.PHONE) }) {
                 Icon(Icons.Outlined.Phone, null)
@@ -86,7 +87,6 @@ fun CreditsCard() {
 }
 
 object Credits {
-    const val AUTHOR = "مهدی گیوکی"
     const val PHONE = "+989192950266"
     const val WEBSITE = "www.nexstone.ir"
     const val WEBSITE_URL = "https://www.nexstone.ir"

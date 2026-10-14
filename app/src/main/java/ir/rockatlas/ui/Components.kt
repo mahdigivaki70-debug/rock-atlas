@@ -57,7 +57,7 @@ fun StoneImage(
         if (!url.isNullOrEmpty()) {
             SubcomposeAsyncImage(
                 model = url,
-                contentDescription = stone.nameFa,
+                contentDescription = stone.name(LocalLang.current),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
                 loading = { PlaceholderIcon() },
@@ -101,14 +101,14 @@ fun StoneRow(
         Row(verticalAlignment = Alignment.CenterVertically) {
             StoneImage(stone, image, onNeedImage, Modifier.size(84.dp).clip(RoundedCornerShape(12.dp)))
             Column(Modifier.weight(1f).padding(horizontal = 12.dp, vertical = 8.dp)) {
-                Text(stone.nameFa, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(stone.nameEn, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
+                val lang = LocalLang.current
+                Text(stone.name(lang), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(stone.subtitle(lang), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     ColorDot(stone.color)
                     Text(
-                        listOfNotNull(type?.nameFa, "${stone.region}، ${stone.country}".takeIf { stone.region != stone.country } ?: stone.country)
-                            .joinToString(" · "),
+                        listOfNotNull(type?.name(lang), stone.place(lang)).joinToString(" · "),
                         style = MaterialTheme.typography.bodySmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

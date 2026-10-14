@@ -61,6 +61,7 @@ fun IdentifyScreen(vm: MainViewModel, onStone: (String) -> Unit, onSearch: () ->
     val typeMap by vm.typeMap.collectAsStateWithLifecycle()
     val images by vm.images.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val str = strings
 
     val takePicture = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { ok ->
         val uri = idVm.pendingCaptureUri
@@ -73,9 +74,9 @@ fun IdentifyScreen(vm: MainViewModel, onStone: (String) -> Unit, onSearch: () ->
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("شناسایی سنگ با عکس") },
+                title = { Text(str.identifyTitle) },
                 actions = {
-                    if (state.bitmap != null) IconButton(onClick = idVm::reset) { Icon(Icons.Outlined.Refresh, "عکس جدید") }
+                    if (state.bitmap != null) IconButton(onClick = idVm::reset) { Icon(Icons.Outlined.Refresh, str.newPhoto) }
                 },
             )
         },
@@ -86,13 +87,13 @@ fun IdentifyScreen(vm: MainViewModel, onStone: (String) -> Unit, onSearch: () ->
                     val bmp = state.bitmap
                     if (bmp != null) {
                         Image(
-                            bmp.asImageBitmap(), "عکس سنگ",
+                            bmp.asImageBitmap(), str.stonePhoto,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxWidth().aspectRatio(4f / 3f).clip(RoundedCornerShape(16.dp)),
                         )
                     } else {
                         Text(
-                            "از سطح سنگ در نور روز و از نزدیک عکس بگیرید، طوری که سنگ بیشتر کادر را پر کند. اپ عکس را با بانک اطلاعاتی روی همین گوشی مقایسه می‌کند و عکس به هیچ سروری فرستاده نمی‌شود.",
+                            str.identifyIntro,
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
@@ -103,42 +104,41 @@ fun IdentifyScreen(vm: MainViewModel, onStone: (String) -> Unit, onSearch: () ->
                             idVm.pendingCaptureUri = uri
                             takePicture.launch(uri)
                         }, modifier = Modifier.weight(1f)) {
-                            Icon(Icons.Filled.PhotoCamera, null); Spacer(Modifier.width(6.dp)); Text("دوربین")
+                            Icon(Icons.Filled.PhotoCamera, null); Spacer(Modifier.width(6.dp)); Text(str.camera)
                         }
                         FilledTonalButton(onClick = {
                             pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         }, modifier = Modifier.weight(1f)) {
-                            Icon(Icons.Filled.PhotoLibrary, null); Spacer(Modifier.width(6.dp)); Text("گالری")
+                            Icon(Icons.Filled.PhotoLibrary, null); Spacer(Modifier.width(6.dp)); Text(str.gallery)
                         }
                     }
                     state.imageUri?.let { uri ->
                         OutlinedButton(
                             onClick = {
-                                if (!LensLauncher.open(context, uri)) Toast.makeText(context, "اپ گوگل لنز یا گوگل روی این گوشی نصب نیست.", Toast.LENGTH_LONG).show()
+                                if (!LensLauncher.open(context, uri)) Toast.makeText(context, str.lensMissing, Toast.LENGTH_LONG).show()
                             },
                             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                         ) {
-                            Icon(Icons.Outlined.ImageSearch, null); Spacer(Modifier.width(6.dp)); Text("پرسیدن از گوگل لنز")
+                            Icon(Icons.Outlined.ImageSearch, null); Spacer(Modifier.width(6.dp)); Text(str.askLens)
                         }
                         Text(
-                            "گوگل لنز API عمومی ندارد؛ این دکمه همین عکس (بدون اطلاعات مکان) را به اپ لنز می‌فرستد. نامی را که لنز پیشنهاد داد در بخش جستجو وارد کنید.",
+                            str.lensNote,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
-                        androidx.compose.material3.TextButton(onClick = onSearch) { Text("رفتن به جستجو") }
+                        androidx.compose.material3.TextButton(onClick = onSearch) { Text(str.goSearch) }
                     }
                     if (state.busy) LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 8.dp))
-                    state.error?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 8.dp)) }
+                    if (state.badImage) Text(str.badImage, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 8.dp))
                 }
             }
             if (state.bitmap != null) {
-                item { SectionTitle("آزمون‌های ساده (اختیاری، دقت را بالا می‌برد)") }
+                item { SectionTitle(str.testsTitle) }
                 item { Tests(state.tests, idVm::setTests) }
                 item {
-                    SectionTitle("نزدیک‌ترین سنگ‌های بانک اطلاعاتی")
+                    SectionTitle(str.matchesTitle)
                     Text(
-                        if (state.modelLoaded) "تطبیق با مدل هوش مصنوعی روی گوشی، رنگ و بافت عکس و آزمون‌های شما."
-                        else "تطبیق بر اساس رنگ و بافت عکس و آزمون‌های شما. نتیجه تقریبی است؛ سنگ‌های هم‌رنگ ممکن است جابه‌جا شوند.",
+                        if (state.modelLoaded) str.matchWithModel else str.matchBasic,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 16.dp),
@@ -146,7 +146,7 @@ fun IdentifyScreen(vm: MainViewModel, onStone: (String) -> Unit, onSearch: () ->
                 }
                 items(state.results, key = { it.stone.id }) { m ->
                     StoneRow(m.stone, typeMap[m.stone.typeId], images[m.stone.id], vm::requestImage, onClick = { onStone(m.stone.id) }) {
-                        Text("${fa((m.score * 100).toInt())}٪", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                        Text("${num((m.score * 100).toInt())}%", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                     }
                 }
             }
@@ -156,18 +156,19 @@ fun IdentifyScreen(vm: MainViewModel, onStone: (String) -> Unit, onSearch: () ->
 
 @Composable
 private fun Tests(t: FieldTests, onChange: (FieldTests) -> Unit) {
+    val str = strings
     Column(Modifier.padding(horizontal = 16.dp)) {
-        Text("چند قطره سرکه یا اسید رقیق روی سنگ (در جای نامرئی):", style = MaterialTheme.typography.bodyMedium)
+        Text(str.acidQ, style = MaterialTheme.typography.bodyMedium)
         LazyRow {
-            val opts = listOf(null to "امتحان نکردم", "strong" to "جوشید", "weak" to "خیلی کم", "none" to "هیچ")
+            val opts = listOf(null to str.acidNotTested, "strong" to str.acidFizz, "weak" to str.acidWeak, "none" to str.acidNone)
             items(opts) { (code, label) ->
                 FilterChip(selected = t.acid == code, onClick = { onChange(t.copy(acid = code)) }, label = { Text(label) }, modifier = Modifier.padding(end = 6.dp))
             }
         }
-        YesNo("حفره‌های ریز روی سطح دارد؟", t.pores) { onChange(t.copy(pores = it)) }
-        YesNo("نور از لبه‌های نازکش رد می‌شود؟", t.translucent) { onChange(t.copy(translucent = it)) }
-        YesNo("دانه‌های درشت و براق (خال‌خالی) دارد؟", t.sparklyGrains) { onChange(t.copy(sparklyGrains = it)) }
-        YesNo("رگه یا نوار مشخص دارد؟", t.veins) { onChange(t.copy(veins = it)) }
+        YesNo(str.poresQ, t.pores) { onChange(t.copy(pores = it)) }
+        YesNo(str.translucentQ, t.translucent) { onChange(t.copy(translucent = it)) }
+        YesNo(str.grainsQ, t.sparklyGrains) { onChange(t.copy(sparklyGrains = it)) }
+        YesNo(str.veinsQ, t.veins) { onChange(t.copy(veins = it)) }
     }
 }
 
@@ -175,8 +176,8 @@ private fun Tests(t: FieldTests, onChange: (FieldTests) -> Unit) {
 private fun YesNo(q: String, value: Answer, onChange: (Answer) -> Unit) {
     Row(Modifier.fillMaxWidth().padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(q, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-        FilterChip(selected = value == Answer.YES, onClick = { onChange(if (value == Answer.YES) Answer.UNKNOWN else Answer.YES) }, label = { Text("بله") })
+        FilterChip(selected = value == Answer.YES, onClick = { onChange(if (value == Answer.YES) Answer.UNKNOWN else Answer.YES) }, label = { Text(strings.yes) })
         Spacer(Modifier.width(6.dp))
-        FilterChip(selected = value == Answer.NO, onClick = { onChange(if (value == Answer.NO) Answer.UNKNOWN else Answer.NO) }, label = { Text("خیر") })
+        FilterChip(selected = value == Answer.NO, onClick = { onChange(if (value == Answer.NO) Answer.UNKNOWN else Answer.NO) }, label = { Text(strings.no) })
     }
 }

@@ -9,6 +9,18 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StoneDao {
+    @Query("SELECT * FROM categories ORDER BY sortOrder")
+    fun categories(): Flow<List<Category>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCategories(categories: List<Category>)
+
+    @Query("DELETE FROM categories")
+    suspend fun clearCategories()
+
+    @Query("SELECT COUNT(*) FROM stones")
+    suspend fun stoneCount(): Int
+
     @Query("SELECT * FROM stone_types ORDER BY sortOrder")
     fun types(): Flow<List<StoneType>>
 
@@ -46,9 +58,11 @@ interface StoneDao {
     suspend fun clearTypes()
 
     @Transaction
-    suspend fun replaceSeed(types: List<StoneType>, stones: List<Stone>) {
+    suspend fun replaceSeed(categories: List<Category>, types: List<StoneType>, stones: List<Stone>) {
         clearStones()
         clearTypes()
+        clearCategories()
+        insertCategories(categories)
         insertTypes(types)
         insertStones(stones)
     }

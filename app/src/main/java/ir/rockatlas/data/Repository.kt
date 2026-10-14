@@ -21,6 +21,7 @@ class Repository(
     private val imageGate = Semaphore(3)
     private val inFlight: MutableSet<String> = Collections.synchronizedSet(mutableSetOf())
 
+    val categories: Flow<List<Category>> = dao.categories()
     val types: Flow<List<StoneType>> = dao.types()
     val stones: Flow<List<Stone>> = dao.stones()
     val favoriteIds: Flow<Set<String>> = dao.favoriteIds().map { it.toSet() }
@@ -33,8 +34,13 @@ class Repository(
     suspend fun ensureSeeded() = withContext(Dispatchers.IO) {
         val text = context.assets.open("seed.json").bufferedReader(Charsets.UTF_8).use { it.readText() }
         val seed = json.decodeFromString(SeedFile.serializer(), text)
-        if (prefs.getInt("version", 0) >= seed.version) return@withContext
-        dao.replaceSeed(seed.types.map { it.toEntity() }, seed.stones.map { it.toEntity() })
+        // The count check covers a destructive schema migration that emptied the tables.
+        if (prefs.getInt("version", 0) >= seed.version && dao.stoneCount() > 0) return@withContext
+        dao.replaceSeed(
+            seed.categories.map { it.toEntity() },
+            seed.types.map { it.toEntity() },
+            seed.stones.map { it.toEntity() },
+        )
         prefs.edit().putInt("version", seed.version).apply()
     }
 

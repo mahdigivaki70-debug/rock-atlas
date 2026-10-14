@@ -10,8 +10,12 @@ and general literature. They are representative, not quarry test results.
 """
 import json
 import pathlib
+import sys
 
-SEED_VERSION = 1
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import i18n_data as T  # noqa: E402
+
+SEED_VERSION = 2
 
 # id: (fa, en, description, density kg/m3, water absorption %, compressive MPa,
 #      flexural MPa, mohs, acid reaction, standard, default finishes, default uses, wiki)
@@ -163,6 +167,48 @@ verde_guatemala|وردی گواتمالا|Verde Guatemala|Indian green marble|se
 verde_alpi|وردی آلپی|Verde Alpi|Verde Aver|serpentinite|gn|vein|دره آئوستا|ایتالیا|||سرپانتینیت سبز تیره با رگه‌های سفید و سبز روشن.|
 verde_antico|وردی آنتیکو|Verde Antico|Verde antique, Thessalian green|serpentinite|gn|vein|تسالی|یونان|||برش سرپانتینی سبز که در دوران روم و بیزانس ارزشمند بود.|Verde antique
 rosso_levanto|رسو لوانتو|Rosso Levanto|Levanto red|serpentinite|rd|vein|لوانتو، لیگوریا|ایتالیا|||برش سرپانتینی قرمز شرابی با رگه‌های سفید و سبز.|
+bianco_lasa|بیانکو لازا|Bianco Lasa|Lasa white, Lasa marble|marble|wh|uni|لازا، تیرول جنوبی|ایتالیا|||مرمر سفید بلورین و مقاوم در برابر هوازدگی از کوه‌های آلپ.|Lasa marble
+calacatta_viola|کالاکاتا ویولا|Calacatta Viola|Viola marble|marble|wh|vein|کارارا، توسکانی|ایتالیا|||مرمر سفید با رگه‌های درشت بنفش و شرابی؛ از سنگ‌های پرطرفدار طراحی داخلی.|
+perlato_sicilia|پرلاتو سیسیل|Perlato di Sicilia|Perlato Sicilia|marmarite|cr|uni|تراپانی، سیسیل|ایتالیا|||سنگ کرم روشن با فسیل‌های بسیار ریز و زمینهٔ یکدست.|
+grigio_carnico|گریجو کارنیکو|Grigio Carnico|Carnic grey|marble|gy|vein|فریولی|ایتالیا|||سنگ خاکستری تیره با رگه‌های سفید درهم.|
+rosa_norvegia|رزا نروژ|Rosa Norvegia|Norwegian Rose|marble|pk|vein|فاوسکه|نروژ|||مرمر صورتی با رگه‌های سبز و خاکستری.|
+rosso_francia|قرمز فرانسه|Rosso Francia|Rouge Languedoc, Rouge de France|marmarite|rd|cloud|لانگدوک|فرانسه|||سنگ قرمز با لکه‌های سفید و خاکستری؛ در کاخ ورسای به کار رفته است.|
+grand_antique|گرند آنتیک|Grand Antique|Grand Antique d'Aubert|marmarite|bk|vein|اوبر، آریژ|فرانسه|||برش مشکی و سفید با تکه‌های زاویه‌دار؛ از سنگ‌های تاریخی اروپا.|
+light_emperador|امپرادور روشن|Light Emperador|Emperador Light|marmarite|bn|vein|لا ریوخا|اسپانیا|||نسخهٔ روشن‌تر امپرادور با زمینهٔ قهوه‌ای عسلی و رگه‌های سفید.|
+panda_white|پاندا وایت|Panda White|Panda marble|marble|wh|vein|استان فوجیان|چین|||مرمر سفید با رگه‌های پهن و پررنگ مشکی؛ ظاهری بسیار گرافیکی دارد.|
+guangxi_white|سفید گوانگشی|Guangxi White|China Carrara|marble|wh|vein|گوانگشی|چین|||مرمر سفید با رگه‌های خاکستری؛ جایگزین ارزان‌تر کارارا.|
+ming_green|مینگ گرین|Ming Green|Verde Ming, Hunan green|marble|gn|cloud|هونان|چین|||مرمر سبز روشن با ابرهای سفید و سبز تیره.|
+ruivina|رویوینا|Ruivina|Ruivina marble|marble|gy|band|استرموز، آلنتژو|پرتغال|||مرمر خاکستری با نوارهای تیره‌تر.|
+black_pearl|بلک پرل|Black Pearl|Black Pearl granite|granite|bk|grain|آندرا پرادش|هند|||گرانیت مشکی با دانه‌های ریز نقره‌ای.|
+steel_grey|استیل گری|Steel Grey|Steel grey granite|granite|gy|grain|آندرا پرادش|هند|||گرانیت خاکستری تیره و یکنواخت؛ پرکاربرد برای کف و کابینت.|
+paradiso|پارادیزو|Paradiso|Paradiso Classic|granite|pu|band|تامیل نادو|هند|||گرانیت گنیسی با نوارهای بنفش، خاکستری و صورتی.|
+red_multicolor|قرمز مولتی‌کالر|Red Multicolor|Multicolor red|granite|rd|band|اوریسا|هند|||گرانیت قرمز با موج‌ها و نوارهای مشکی و خاکستری.|
+santa_cecilia|سانتا سسیلیا|Santa Cecilia|Santa Cecilia Gold|granite|ye|grain|اسپیریتو سانتو|برزیل|||گرانیت زرد طلایی با دانه‌های قهوه‌ای و خال‌های قرمز گارنت.|
+blue_bahia|بلو باهیا|Azul Bahia|Blue Bahia|granite|bl|grain|باهیا|برزیل|||سنگ آذرین آبی آسمانی با رگه‌های سفید؛ کمیاب و گران‌قیمت.|
+labrador_antique|لابرادور آنتیک|Labrador Antique|Antique Brown|granite|bk|grain|اسپیریتو سانتو|برزیل|||گرانیت تیره با بلورهای قهوه‌ای و طلایی درشت.|
+rosa_beta|رزا بتا|Rosa Beta|Rosa Beta granite|granite|pk|grain|ساردینیا|ایتالیا|||گرانیت صورتی روشن با دانه‌های خاکستری و مشکی.|
+balmoral_red|رسو بالمورال|Balmoral Red|Rosso Balmoral|granite|rd|grain|تاملا|فنلاند|||گرانیت قرمز تیره و ریزدانه؛ برای نما و سنگ یادبود.|
+g664|گرانیت G664|G664 Luna Pearl|G664, Bainbrook brown|granite|pk|grain|فوجیان|چین|||گرانیت صورتی مایل به قهوه‌ای ارزان و پرمصرف.|
+g682|گرانیت G682|G682 Rusty Yellow|G682, Rustic yellow|granite|ye|grain|فوجیان|چین|||گرانیت زرد زنگاری برای کف‌پوش محوطه و نما.|
+jura_beige|ژورا بژ|Jura Beige|Jura Marble, Jura limestone|limestone|cr|cloud|باواریا|آلمان|||سنگ آهک بژ با فسیل‌های آمونیت و بلمنیت؛ برای کف و نما.|
+vratza|ورتسا|Vratza Limestone|Vratza|limestone|cr|uni|ورتسا|بلغارستان|||سنگ آهک کرم روشن و یکنواخت؛ برای نما و کف.|
+crema_europa|کرم اروپا|Crema Europa|Crema Europa limestone|limestone|cr|band|کاستیا|اسپانیا|||سنگ آهک کرم با رگه‌های ریز موازی.|
+belgian_bluestone|سنگ آبی بلژیک|Belgian Bluestone|Petit Granit, Pierre bleue|limestone|gy|uni|منطقهٔ والونی|بلژیک|||سنگ آهک خاکستری آبی‌فام با فسیل‌های ریز؛ با وجود نام «پتی گرانیت»، سنگ آهک است.|
+chinese_bluestone|سنگ آبی چین|Chinese Bluestone|Blue limestone|limestone|gy|uni|فوجیان|چین|||سنگ آهک خاکستری تیره برای کف‌پوش محوطه و استخر.|
+kandla_grey|کاندلا گری|Kandla Grey|Kandla grey sandstone|sandstone|gy|uni|راجستان|هند|||ماسه‌سنگ خاکستری یکنواخت برای کف‌پوش محوطه و پیاده‌رو.|
+raj_green|راج گرین|Raj Green|Raja green|sandstone|gn|band|راجستان|هند|||ماسه‌سنگ سبز با لایه‌های قهوه‌ای و کرم.|
+teakwood|ماسه‌سنگ تیک‌وود|Teakwood Sandstone|Teak sandstone|sandstone|ye|band|راجستان|هند|||ماسه‌سنگ با نوارهای زرد و قهوه‌ای شبیه بافت چوب.|
+modak|ماسه‌سنگ موداک|Modak Sandstone|Modak|sandstone|pk|band|راجستان|هند|||ماسه‌سنگ صورتی تا قرمز با نوارهای زرد.|
+autumn_brown|اوتوم براون|Autumn Brown|Autumn brown sandstone|sandstone|bn|band|راجستان|هند|||ماسه‌سنگ قهوه‌ای با نوارهای پاییزی.|
+navona|تراورتن ناوونا|Travertino Navona|Navona|travertine|cr|pore|تیوولی، لاتزیو|ایتالیا|||تراورتن کرم با حفره‌های ریز؛ از معادن تاریخی نزدیک رم.|
+persian_walnut|تراورتن گردویی ایران|Persian Walnut Travertine|Iran walnut travertine|travertine|bn|band|ایران|ایران|||تراورتن قهوه‌ای گردویی با نوارهای رنگی؛ از تراورتن‌های صادراتی ایران.|
+peru_travertine|تراورتن پرو|Peruvian Travertine|Peru travertine|travertine|cr|pore|خونین|پرو|||تراورتن کرم تا طلایی از رشته‌کوه آند.|
+white_macaubas|ماکائوباس سفید|White Macaubas|Macaubas white|quartzite|wh|band|باهیا|برزیل|||کوارتزیت سفید با نوارهای ظریف خاکستری؛ بسیار سخت و کم‌جذب.|
+patagonia|پاتاگونیا|Patagonia|Patagonia quartzite|quartzite|cr|cloud|برزیل|برزیل|||کوارتزیت چندرنگ با تکه‌های کرم، قهوه‌ای و شفاف؛ مناسب بک‌لایت.|
+cristallo|کریستالو|Cristallo|Cristallo quartzite|quartzite|wh|cloud|برزیل|برزیل|||کوارتزیت سفید نیمه‌شفاف با بلورهای درشت؛ برای بک‌لایت و فضاهای لوکس.|
+sea_pearl|سی پرل|Sea Pearl|Sea Pearl quartzite|quartzite|gy|vein|برزیل|برزیل|||کوارتزیت خاکستری با رگه‌های سفید و نقره‌ای.|
+perla_venata|پرلا ونتا|Perla Venata|Perla Venata quartzite|quartzite|wh|vein|برزیل|برزیل|||کوارتزیت سفید با رگه‌های خاکستری شبیه مرمر.|
+persian_red_onyx|اونیکس قرمز ایران|Persian Red Onyx|Red onyx|onyx|rd|band|ایران|ایران|||مرمر سنگ قرمز و نارنجی با نوارهای موجی؛ برای دیوار و میز نورپردازی‌شده.|
 """
 
 
@@ -170,15 +216,41 @@ def parse_range(r):
     return {"min": r[0], "max": r[1]}
 
 
+def table(text, cols):
+    rows = {}
+    for line in text.strip().splitlines():
+        parts = [c.strip() for c in line.split("|")]
+        assert len(parts) == cols, (len(parts), line)
+        assert parts[0] not in rows, parts[0]
+        rows[parts[0]] = parts
+    return rows
+
+
 def main():
     root = pathlib.Path(__file__).resolve().parent.parent
+    countries = table(T.COUNTRIES, 4)
+    regions = table(T.REGIONS, 4)
+    cats = table(T.CATEGORIES, 6)
+    type_tr = table(T.TYPES, 6)
+    stone_tr = table(T.STONES, 6)
+
+    type_to_cat = {}
+    categories = []
+    for i, (cid, c) in enumerate(cats.items()):
+        categories.append({"id": cid, "nameFa": c[1], "nameEn": c[2], "nameAr": c[3], "nameRu": c[4], "sortOrder": i})
+        for t in c[5].split(","):
+            type_to_cat[t.strip()] = cid
+
     types = []
     type_ids = set()
     for i, t in enumerate(TYPES):
         (tid, fa, en, desc, dens, absn, comp, flex, mohs, acid, std, fin, uses, wiki) = t
         type_ids.add(tid)
+        tr = type_tr[tid]
         types.append({
-            "id": tid, "nameFa": fa, "nameEn": en, "description": desc,
+            "id": tid, "categoryId": type_to_cat[tid],
+            "nameFa": fa, "nameEn": en, "nameAr": tr[1], "nameRu": tr[2],
+            "description": desc, "descEn": tr[3], "descAr": tr[4], "descRu": tr[5],
             "densityMin": dens[0], "densityMax": dens[1],
             "absorptionMin": absn[0], "absorptionMax": absn[1],
             "compressiveMin": comp[0], "compressiveMax": comp[1],
@@ -201,21 +273,30 @@ def main():
         assert tid in type_ids, line
         assert color in colors, line
         assert pattern in patterns, line
+        assert sid in stone_tr, f"missing translation for stone {sid}"
+        assert region in regions, f"missing translation for region {region}"
+        assert country in countries, f"missing translation for country {country}"
         seen.add(sid)
+        tr, rg, co = stone_tr[sid], regions[region], countries[country]
         stones.append({
-            "id": sid, "nameFa": fa, "nameEn": en, "aliases": aliases,
+            "id": sid, "nameFa": fa, "nameEn": en, "nameAr": tr[1], "nameRu": tr[2],
+            "aliases": aliases,
             "typeId": tid, "color": color, "pattern": pattern,
-            "region": region, "country": country,
+            "region": region, "regionEn": rg[1], "regionAr": rg[2], "regionRu": rg[3],
+            "country": country, "countryEn": co[1], "countryAr": co[2], "countryRu": co[3],
             "finishes": fin or type_defaults[tid]["finishes"],
             "uses": uses or type_defaults[tid]["uses"],
-            "description": desc, "wikiTitle": wiki or None,
+            "description": desc, "descEn": tr[3], "descAr": tr[4], "descRu": tr[5],
+            "wikiTitle": wiki or None,
         })
+    extra = set(stone_tr) - seen
+    assert not extra, f"translations for unknown stones: {extra}"
 
     out = root / "app/src/main/assets/seed.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"version": SEED_VERSION, "types": types, "stones": stones},
+    out.write_text(json.dumps({"version": SEED_VERSION, "categories": categories, "types": types, "stones": stones},
                               ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"wrote {out} ({len(types)} types, {len(stones)} stones)")
+    print(f"wrote {out} ({len(categories)} categories, {len(types)} types, {len(stones)} stones)")
 
 
 if __name__ == "__main__":

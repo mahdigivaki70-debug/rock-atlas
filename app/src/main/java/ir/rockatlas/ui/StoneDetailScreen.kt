@@ -44,23 +44,25 @@ import ir.rockatlas.data.StoneType
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun StoneDetailScreen(vm: MainViewModel, stoneId: String, onBack: () -> Unit, onType: (String) -> Unit, onCountry: (String) -> Unit) {
+fun StoneDetailScreen(vm: MainViewModel, stoneId: String, onBack: () -> Unit, onCategory: (String) -> Unit, onCountry: (String) -> Unit) {
     val stone by remember(stoneId) { vm.repo.stone(stoneId) }.collectAsStateWithLifecycle(null)
     val typeMap by vm.typeMap.collectAsStateWithLifecycle()
     val images by vm.images.collectAsStateWithLifecycle()
     val favorites by vm.favorites.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val lang = LocalLang.current
+    val str = strings
     val s = stone
     val isFav = stoneId in favorites
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(s?.nameFa ?: "") },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "بازگشت") } },
+                title = { Text(s?.name(lang).orEmpty()) },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, str.back) } },
                 actions = {
                     IconButton(onClick = { vm.toggleFavorite(stoneId) }) {
-                        Icon(if (isFav) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder, if (isFav) "حذف از علاقه‌مندی‌ها" else "افزودن به علاقه‌مندی‌ها")
+                        Icon(if (isFav) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder, if (isFav) str.removeFavorite else str.addFavorite)
                     }
                 },
             )
@@ -74,30 +76,29 @@ fun StoneDetailScreen(vm: MainViewModel, stoneId: String, onBack: () -> Unit, on
             if (image != null && image.imageUrl.isNotEmpty()) {
                 TextButton(onClick = { openHttps(context, image.filePageUrl) }, modifier = Modifier.padding(horizontal = 8.dp)) {
                     Text(
-                        (if (image.generic) "تصویر نمونه از ${type?.nameFa ?: "این نوع سنگ"}، نه همین سنگ. " else "") +
-                            "منبع: ویکی‌مدیا کامانز (پدیدآورنده و مجوز در صفحهٔ فایل)",
+                        (if (image.generic) str.sampleImage(type?.name(lang).orEmpty()) else "") + str.imageSource,
                         style = MaterialTheme.typography.labelSmall,
                     )
                 }
             }
             Column(Modifier.padding(horizontal = 16.dp)) {
                 Spacer(Modifier.height(8.dp))
-                Text(s.nameFa, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-                Text(s.nameEn, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(s.name(lang), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Text(s.subtitle(lang), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 if (s.aliases.isNotBlank()) {
-                    Text("نام‌های دیگر: ${s.aliases}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("${str.otherNames}: ${s.aliases}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Spacer(Modifier.height(10.dp))
                 FlowRow {
-                    if (type != null) AssistChip(onClick = { onType(type.id) }, label = { Text(type.nameFa) }, modifier = Modifier.padding(end = 6.dp))
-                    SuggestionChip(onClick = {}, label = { Text(Labels.color(s.color).fa) }, icon = { ColorDot(s.color) }, modifier = Modifier.padding(end = 6.dp))
-                    SuggestionChip(onClick = {}, label = { Text(Labels.patterns[s.pattern].orEmpty()) })
+                    if (type != null) AssistChip(onClick = { onCategory(type.categoryId) }, label = { Text(type.name(lang)) }, modifier = Modifier.padding(end = 6.dp))
+                    SuggestionChip(onClick = {}, label = { Text(Labels.color(s.color).name(lang)) }, icon = { ColorDot(s.color) }, modifier = Modifier.padding(end = 6.dp))
+                    SuggestionChip(onClick = {}, label = { Text(Labels.patterns[s.pattern]?.get(lang).orEmpty()) })
                 }
                 Spacer(Modifier.height(8.dp))
-                Text(s.description, style = MaterialTheme.typography.bodyLarge)
+                Text(s.desc(lang), style = MaterialTheme.typography.bodyLarge)
             }
 
-            SectionTitle("منطقه و معدن")
+            SectionTitle(str.regionTitle)
             Card(
                 onClick = { onCountry(s.country) },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
@@ -107,25 +108,25 @@ fun StoneDetailScreen(vm: MainViewModel, stoneId: String, onBack: () -> Unit, on
                     Icon(Icons.Outlined.Place, null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.width(10.dp))
                     Column {
-                        Text(s.region, style = MaterialTheme.typography.titleMedium)
-                        Text("کشور: ${s.country} · دیدن سنگ‌های دیگر این کشور", style = MaterialTheme.typography.bodySmall)
+                        Text(s.region(lang), style = MaterialTheme.typography.titleMedium)
+                        Text(str.countryLine(s.country(lang)), style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
 
             if (type != null) LabProperties(type)
 
-            SectionTitle("کاربردهای پیشنهادی")
+            SectionTitle(str.usesTitle)
             FlowRow(Modifier.padding(horizontal = 16.dp)) {
-                Labels.codes(s.uses).forEach { u -> SuggestionChip(onClick = {}, label = { Text(Labels.uses[u] ?: u) }, modifier = Modifier.padding(end = 6.dp)) }
+                Labels.codes(s.uses).forEach { u -> SuggestionChip(onClick = {}, label = { Text(Labels.uses[u]?.get(lang) ?: u) }, modifier = Modifier.padding(end = 6.dp)) }
             }
-            SectionTitle("فرآوری‌های رایج سطح")
+            SectionTitle(str.finishesTitle)
             FlowRow(Modifier.padding(horizontal = 16.dp)) {
-                Labels.codes(s.finishes).forEach { f -> SuggestionChip(onClick = {}, label = { Text(Labels.finishes[f] ?: f) }, modifier = Modifier.padding(end = 6.dp)) }
+                Labels.codes(s.finishes).forEach { f -> SuggestionChip(onClick = {}, label = { Text(Labels.finishes[f]?.get(lang) ?: f) }, modifier = Modifier.padding(end = 6.dp)) }
             }
             if (type?.acid == "strong" && "fa" in Labels.codes(s.uses)) {
                 Text(
-                    "نکته: سنگ‌های کربناتی در برابر باران اسیدی و شوینده‌های اسیدی حساس‌اند؛ برای نما، سنگ را آب‌گریز (ضدآب) کنید و با شوینده‌های خنثی تمیز کنید.",
+                    str.carbonateTip,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
@@ -133,7 +134,7 @@ fun StoneDetailScreen(vm: MainViewModel, stoneId: String, onBack: () -> Unit, on
             }
             s.wikiTitle?.let { title ->
                 TextButton(onClick = { openHttps(context, "https://en.wikipedia.org/wiki/" + android.net.Uri.encode(title.replace(' ', '_'))) }, modifier = Modifier.padding(horizontal = 8.dp)) {
-                    Text("مطالعهٔ بیشتر در ویکی‌پدیا")
+                    Text(str.readMore)
                 }
             }
         }
@@ -142,23 +143,25 @@ fun StoneDetailScreen(vm: MainViewModel, stoneId: String, onBack: () -> Unit, on
 
 @Composable
 private fun LabProperties(type: StoneType) {
-    SectionTitle("مشخصات آزمایشگاهی (${type.nameFa})")
+    val lang = LocalLang.current
+    val s = strings
+    SectionTitle(s.labTitle(type.name(lang)))
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
         Column(Modifier.padding(vertical = 4.dp)) {
-            PropRow("چگالی (وزن مخصوص)", "${faRange(type.densityMin, type.densityMax)} kg/m³")
-            PropRow("جذب آب", "${faRange(type.absorptionMin, type.absorptionMax)} ٪")
-            PropRow("مقاومت فشاری", "${faRange(type.compressiveMin, type.compressiveMax)} MPa")
-            PropRow("مقاومت خمشی", "${faRange(type.flexuralMin, type.flexuralMax)} MPa")
-            PropRow("سختی موس", faRange(type.mohsMin, type.mohsMax))
-            PropRow("واکنش با اسید", Labels.acid[type.acid].orEmpty())
-            PropRow("استاندارد مرجع", type.standard, last = true)
+            PropRow(s.density, "${range(type.densityMin, type.densityMax)} kg/m³")
+            PropRow(s.absorption, "${range(type.absorptionMin, type.absorptionMax)} %")
+            PropRow(s.compressive, "${range(type.compressiveMin, type.compressiveMax)} MPa")
+            PropRow(s.flexural, "${range(type.flexuralMin, type.flexuralMax)} MPa")
+            PropRow(s.mohs, range(type.mohsMin, type.mohsMax))
+            PropRow(s.acid, Labels.acid[type.acid]?.get(lang).orEmpty())
+            PropRow(s.standard, type.standard, last = true)
         }
     }
     Text(
-        "این اعداد محدودهٔ معمول برای این نوع سنگ است، نه نتیجهٔ آزمایش همین معدن. برای پروژه، برگهٔ آزمایش (گزارش آزمون) سنگ را از فروشنده بخواهید.",
+        s.labDisclaimer,
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),

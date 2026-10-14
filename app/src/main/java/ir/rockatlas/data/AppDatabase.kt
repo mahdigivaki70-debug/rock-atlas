@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [StoneType::class, Stone::class, CachedImage::class, Favorite::class],
-    version = 1,
+    entities = [Category::class, StoneType::class, Stone::class, CachedImage::class, Favorite::class],
+    version = 2,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -15,6 +15,9 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         fun create(context: Context): AppDatabase =
-            Room.databaseBuilder(context, AppDatabase::class.java, "rock_atlas.db").build()
+            Room.databaseBuilder(context, AppDatabase::class.java, "rock_atlas.db")
+                // Catalogue tables are re-imported from assets on every schema change.
+                .fallbackToDestructiveMigration()
+                .build()
     }
 }
